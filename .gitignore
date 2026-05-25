@@ -1,0 +1,36 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Large video originals — keep only compressed .mp4 previews
+public/previews/*.mov
+
+# Photo processing intermediates — only photo-card.jpg is needed in prod
+public/avatar.png
+public/avatar-half.png
+public/avatar-tall.png
+public/F76BE755-3B04-406F-BF6E-BE19B321A144_1_105_c.jpeg
+
+# Video resume is hosted on YouTube — never stored in the repo
+public/video-resume.mp4
