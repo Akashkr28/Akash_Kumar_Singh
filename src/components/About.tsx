@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { GraduationCap, MapPin, Zap, Play, Pause } from 'lucide-react'
+import { GraduationCap, MapPin, Zap, Play } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 gsap.registerPlugin(ScrollTrigger)
