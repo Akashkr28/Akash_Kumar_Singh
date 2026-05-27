@@ -65,17 +65,3 @@ body {
   background-size: 60px 60px;
 }
 
-/* ── Infinite horizontal marquee (Projects section) ── */
-@keyframes marquee-rtl {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-.marquee-track {
-  animation: marquee-rtl 28s linear infinite;
-  will-change: transform;
-}
-
-.marquee-track:hover {
-  animation-play-state: paused;
-}

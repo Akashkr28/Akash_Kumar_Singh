@@ -1,5 +1,8 @@
+import { useState, useEffect, useCallback } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   ExternalLink, Radio, BarChart2, CheckSquare, Layers,
+  ChevronLeft, ChevronRight,
 } from 'lucide-react'
 import { GithubIcon } from './BrandIcons'
 import {
@@ -11,11 +14,8 @@ import type { IconType } from 'react-icons'
 
 /* ─── Types ─────────────────────────────────────────────── */
 interface ProjectMedia {
-  /** 'image' = screenshot, 'video' = local mp4, 'youtube' = muted autoplay embed */
   type: 'image' | 'video' | 'youtube'
-  /** Path relative to /public — used for image / video types */
   src?: string
-  /** YouTube video ID — used for youtube type */
   videoId?: string
 }
 
@@ -28,7 +28,6 @@ interface Project {
   icon: React.ReactNode
   highlight: 'cyan' | 'green' | 'violet' | 'amber' | 'rose' | 'sky'
   badge: string
-  /** Optional: provide a screenshot or screen-recording to show in the preview pane */
   media?: ProjectMedia
 }
 
@@ -62,10 +61,9 @@ const projects: Project[] = [
     title: 'Live Location Tracker',
     shortDesc: 'Real-time GPS map powered by Apache Kafka for high-throughput streaming. Multiple users share live positions with sub-second latency.',
     tech: ['React', 'Kafka', 'Leaflet.js', 'Node.js'],
-    liveUrl: 'https://your-tracker-url.com',            // ← replace with real URL
+    liveUrl: 'https://your-tracker-url.com',
     githubUrl: 'https://github.com/Akashkr28/location-tracker',
     icon: <Radio size={28} />, highlight: 'cyan', badge: 'Real-time',
-    // media: { type: 'video', src: '/previews/location-tracker.mp4' },
   },
   {
     title: 'Pulseboard',
@@ -96,191 +94,299 @@ const projects: Project[] = [
   },
 ]
 
-/* ─── Browser mockup preview ─────────────────────────────── */
-function MockBrowser({ project }: { project: Project }) {
+const AUTO_ADVANCE_MS = 5000
+
+/* ─── Shared media renderer (used in screen + reflection) ── */
+function ScreenMedia({ media, project, tabIndex }: {
+  media?: ProjectMedia
+  project: Project
+  tabIndex?: number
+}) {
   const cls = palette[project.highlight]
-  const { media } = project
 
-  return (
-    <div className="rounded-xl overflow-hidden border border-slate-800 shadow-2xl group/browser">
-      {/* Chrome bar */}
-      <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-950 border-b border-slate-800">
-        <span className="w-2.5 h-2.5 rounded-full bg-red-500/80 shrink-0" />
-        <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/80 shrink-0" />
-        <span className="w-2.5 h-2.5 rounded-full bg-green-500/80 shrink-0" />
-        <div className="flex-1 mx-3">
-          <div className="bg-slate-800/80 rounded px-3 py-0.5 text-[11px] text-slate-500 font-mono truncate">
-            {project.liveUrl}
-          </div>
-        </div>
-        <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border border-current/20 shrink-0 ${cls.text}`}>
-          {project.badge}
-        </span>
-      </div>
-
-      {/* ── Preview canvas ── */}
-      <div className="relative aspect-video overflow-hidden">
-
-        {/* ── Case 1: Screenshot image ── */}
-        {media?.type === 'image' && (
-          <img
-            src={media.src}
-            alt={`${project.title} preview`}
-            className="w-full h-full object-cover object-top transition-transform duration-700 group-hover/browser:scale-105"
-          />
-        )}
-
-        {/* ── Case 2: Demo video (auto-plays silently) ── */}
-        {media?.type === 'video' && (
-          <video
-            src={media.src}
-            className="w-full h-full object-cover"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-          />
-        )}
-
-        {/* ── Case 3: YouTube embed — muted autoplay loop, no controls ── */}
-        {media?.type === 'youtube' && (
-          <iframe
-            className="absolute inset-0 w-full h-full pointer-events-none"
-            src={`https://www.youtube.com/embed/${media.videoId}?autoplay=1&mute=1&loop=1&playlist=${media.videoId}&controls=0&modestbranding=1&rel=0&playsinline=1&disablekb=1`}
-            title="Project demo"
-            allow="autoplay; encrypted-media"
-            frameBorder="0"
-          />
-        )}
-
-        {/* ── Case 4: Placeholder (no media provided) ── */}
-        {!media && (
-          <div
-            className="absolute inset-0 flex items-center justify-center"
-            style={{ background: `linear-gradient(135deg, rgba(${cls.rgb},0.10) 0%, #020617 55%, rgba(${cls.rgb},0.04) 100%)` }}
-          >
-            <div className="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
-            <div
-              className="absolute w-44 h-44 rounded-full blur-3xl pointer-events-none"
-              style={{ background: `rgba(${cls.rgb},0.18)` }}
-            />
-            <div className={`relative z-10 p-5 rounded-2xl ${cls.bg} ${cls.text}`}>
-              {project.icon}
-            </div>
-            {/* Corner dots */}
-            {(['top-3 left-3', 'bottom-3 right-3'] as const).map(pos => (
-              <div key={pos} className={`absolute ${pos} flex gap-1 opacity-25`}>
-                {[0,1,2].map(d => (
-                  <div key={d} className="w-1 h-1 rounded-full" style={{ backgroundColor: cls.hex }} />
-                ))}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Overlay hint shown on image/video when no media: "Add preview" label */}
-        {!media && (
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded bg-slate-950/70 text-[10px] font-mono text-slate-600 pointer-events-none whitespace-nowrap">
-            add media → see below
-          </div>
-        )}
-      </div>
-    </div>
+  if (media?.type === 'video') return (
+    <video
+      src={media.src}
+      className="w-full h-full object-cover"
+      autoPlay muted loop playsInline preload="metadata"
+    />
   )
-}
 
-/* ─── Project card ───────────────────────────────────────── */
-function ProjectCard({ project }: { project: Project }) {
-  const cls = palette[project.highlight]
+  if (media?.type === 'youtube') return (
+    <iframe
+      tabIndex={tabIndex ?? 0}
+      src={`https://www.youtube.com/embed/${media.videoId}?autoplay=1&mute=1&loop=1&playlist=${media.videoId}&controls=0&modestbranding=1&rel=0&playsinline=1&disablekb=1`}
+      className="absolute inset-0 w-full h-full pointer-events-none"
+      allow="autoplay; encrypted-media"
+      frameBorder="0"
+      title={project.title}
+    />
+  )
+
+  /* Placeholder */
   return (
-    <div className="group space-y-4">
-      <MockBrowser project={project} />
-
-      {/* Title */}
-      <h3 className={`text-lg font-bold text-white transition-colors duration-200 group-hover:${cls.text}`}>
-        {project.title}
-      </h3>
-
-      {/* Tech logos */}
-      <div className="flex flex-wrap items-center gap-2">
-        {project.tech.map(t => {
-          const Icon = techIcons[t]
-          return Icon ? (
-            <div
-              key={t}
-              title={t}
-              className="p-1.5 rounded-lg bg-slate-800/80 border border-slate-700/50 hover:border-slate-600 transition-all hover:scale-110"
-            >
-              <Icon size={14} color={cls.hex} style={{ opacity: 0.75 }} />
-            </div>
-          ) : (
-            <span key={t} className="text-[10px] font-mono px-2 py-1 rounded-md bg-slate-800/80 border border-slate-700/50 text-slate-400">
-              {t}
-            </span>
-          )
-        })}
-      </div>
-
-      {/* Description */}
-      <p className="text-slate-400 text-sm leading-relaxed">
-        {project.shortDesc}
-      </p>
-
-      {/* Links */}
-      <div className="flex items-center gap-5">
-        <a
-          href={project.githubUrl} target="_blank" rel="noopener noreferrer"
-          className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-white transition-colors"
-        >
-          <GithubIcon size={14} /> Source
-        </a>
-        <a
-          href={project.liveUrl} target="_blank" rel="noopener noreferrer"
-          className={`flex items-center gap-1.5 text-xs ${cls.text} opacity-80 hover:opacity-100 transition-opacity`}
-        >
-          <ExternalLink size={13} /> Live Demo
-        </a>
-      </div>
+    <div
+      className="absolute inset-0 flex items-center justify-center"
+      style={{ background: `linear-gradient(135deg, rgba(${cls.rgb},0.12) 0%, #020617 60%, rgba(${cls.rgb},0.05) 100%)` }}
+    >
+      <div className="absolute inset-0 grid-bg opacity-25 pointer-events-none" />
+      <div className="absolute w-52 h-52 rounded-full blur-3xl pointer-events-none"
+        style={{ background: `rgba(${cls.rgb},0.16)` }} />
+      <div className={`relative z-10 p-6 rounded-2xl ${cls.bg} ${cls.text}`}>{project.icon}</div>
     </div>
   )
 }
 
 /* ─── Main export ────────────────────────────────────────── */
 export default function Projects() {
+  const [idx, setIdx]       = useState(0)
+  const [paused, setPaused] = useState(false)
+  const [prog, setProg]     = useState(0)   // 0–1 progress for the auto-advance bar
+
+  const project = projects[idx]
+  const cls     = palette[project.highlight]
+
+  const goTo = useCallback((next: number) => {
+    setIdx((next + projects.length) % projects.length)
+    setProg(0)
+  }, [])
+
+  /* Auto-advance + progress bar */
+  useEffect(() => {
+    if (paused) return
+    const start   = performance.now()
+    let rafId: number
+
+    const tick = (now: number) => {
+      const elapsed = now - start
+      setProg(Math.min(elapsed / AUTO_ADVANCE_MS, 1))
+      if (elapsed < AUTO_ADVANCE_MS) {
+        rafId = requestAnimationFrame(tick)
+      } else {
+        setIdx(i => (i + 1) % projects.length)
+        setProg(0)
+      }
+    }
+    rafId = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(rafId)
+  }, [idx, paused])
+
   return (
-    <section id="projects" className="py-28 relative overflow-hidden">
+    <section id="projects" className="py-28 px-6 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-950/5 to-transparent pointer-events-none" />
 
       {/* ── Header ── */}
-      <div className="mb-16 text-center px-6">
+      <div className="mb-14 text-center">
         <p className="font-mono text-cyan-400 text-xs tracking-[0.3em] uppercase mb-3">02. Projects</p>
         <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight">Things I've Built</h2>
         <p className="text-slate-500 mt-2 text-sm">{projects.length} projects · all live and deployed</p>
       </div>
 
-      {/* ── Infinite marquee ── */}
-      {/*  Fade the left/right edges so cards glide in/out of view  */}
-      <div
-        className="relative overflow-hidden"
-        style={{
-          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
-          maskImage:        'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
-        }}
-      >
-        {/* Doubled array → seamless loop: animation moves exactly -50% (= 1 full set) */}
-        <div className="marquee-track flex gap-8 w-max px-8">
-          {[...projects, ...projects].map((project, i) => (
-            <div key={`${project.title}-${i}`} className="w-[420px] shrink-0">
-              <ProjectCard project={project} />
+      {/* ── 3-D monitor wrapper ── */}
+      <div className="max-w-3xl mx-auto" style={{ perspective: '1600px' }}>
+
+        {/* ══ SCREEN ══ */}
+        <div
+          style={{
+            transform: 'rotateX(4deg)',
+            transformStyle: 'preserve-3d',
+          }}
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+        >
+          {/* Auto-advance progress bar — sits above the screen */}
+          <div className="h-[2px] rounded-t-full overflow-hidden bg-slate-800/60 mb-0">
+            <div
+              className="h-full rounded-full transition-none"
+              style={{
+                width: `${prog * 100}%`,
+                background: `linear-gradient(to right, ${cls.hex}, #a78bfa)`,
+                transition: paused ? 'none' : undefined,
+              }}
+            />
+          </div>
+
+          {/* Screen body */}
+          <div
+            className="rounded-xl overflow-hidden border border-slate-700/30 bg-slate-950 shadow-2xl"
+            style={{
+              boxShadow: `0 0 0 1px rgba(255,255,255,0.04),
+                          0 50px 100px rgba(0,0,0,0.75),
+                          0 0 80px rgba(${cls.rgb},0.07)`,
+            }}
+          >
+            {/* ── Video / media area ── */}
+            <div className="relative aspect-video overflow-hidden bg-slate-950">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={project.title}
+                  className="absolute inset-0"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5, ease: 'easeInOut' }}
+                >
+                  <ScreenMedia media={project.media} project={project} />
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Screen glare — sells the 3D glass surface */}
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background: 'linear-gradient(130deg, rgba(255,255,255,0.05) 0%, transparent 45%)',
+                }}
+              />
+              {/* Inner bezel shadow */}
+              <div className="absolute inset-0 pointer-events-none"
+                style={{ boxShadow: 'inset 0 0 40px rgba(0,0,0,0.55)' }} />
             </div>
-          ))}
+
+            {/* ── Project info (inside the screen, below video) ── */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`info-${project.title}`}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.4, ease: 'easeOut' }}
+                className="px-7 py-5 border-t border-slate-800/60"
+              >
+                {/* Title row */}
+                <div className="flex items-center justify-between gap-4 mb-3">
+                  <h3 className="text-white font-bold text-lg leading-tight tracking-tight">
+                    {project.title}
+                  </h3>
+                  <span className={`shrink-0 text-[10px] font-mono px-2.5 py-0.5 rounded-full border border-current/20 ${cls.text}`}>
+                    {project.badge}
+                  </span>
+                </div>
+
+                {/* Tech icons */}
+                <div className="flex flex-wrap items-center gap-2 mb-3">
+                  {project.tech.map(t => {
+                    const Icon = techIcons[t]
+                    return Icon ? (
+                      <div key={t} title={t}
+                        className="p-1.5 rounded-lg bg-slate-800/80 border border-slate-700/50 hover:border-slate-600 transition-all hover:scale-110">
+                        <Icon size={13} color={cls.hex} style={{ opacity: 0.8 }} />
+                      </div>
+                    ) : (
+                      <span key={t}
+                        className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-800/80 border border-slate-700/50 text-slate-400">
+                        {t}
+                      </span>
+                    )
+                  })}
+                </div>
+
+                {/* Description */}
+                <p className="text-slate-400 text-sm leading-relaxed mb-4 line-clamp-2">
+                  {project.shortDesc}
+                </p>
+
+                {/* Links */}
+                <div className="flex items-center gap-5">
+                  <a href={project.githubUrl} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-white transition-colors">
+                    <GithubIcon size={14} /> Source
+                  </a>
+                  <a href={project.liveUrl} target="_blank" rel="noopener noreferrer"
+                    className={`flex items-center gap-1.5 text-xs ${cls.text} opacity-80 hover:opacity-100 transition-opacity`}>
+                    <ExternalLink size={13} /> Live Demo
+                  </a>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {/* ══ STAND ══ */}
+        <div className="relative flex justify-center h-14 overflow-visible">
+          {/* Left leg */}
+          <div
+            className="absolute bottom-0 w-px h-14 origin-bottom"
+            style={{
+              left: 'calc(50% - 56px)',
+              background: 'linear-gradient(to bottom, rgba(100,116,139,0.6), rgba(51,65,85,0.2))',
+              transform: 'rotate(-14deg)',
+            }}
+          />
+          {/* Right leg */}
+          <div
+            className="absolute bottom-0 w-px h-14 origin-bottom"
+            style={{
+              right: 'calc(50% - 56px)',
+              background: 'linear-gradient(to bottom, rgba(100,116,139,0.6), rgba(51,65,85,0.2))',
+              transform: 'rotate(14deg)',
+            }}
+          />
+          {/* Base bar */}
+          <div
+            className="absolute bottom-0 left-1/2 -translate-x-1/2 h-px w-36 rounded-full"
+            style={{ background: 'linear-gradient(to right, transparent, rgba(100,116,139,0.45), transparent)' }}
+          />
+        </div>
+
+        {/* ══ REFLECTION ══ */}
+        <div className="relative overflow-hidden h-28 -mt-px">
+          {/* Flipped, blurred, faded duplicate of the media only */}
+          <div
+            className="rounded-xl overflow-hidden border border-slate-700/10"
+            style={{
+              transform: 'scaleY(-1) scaleX(0.97)',
+              transformOrigin: 'top center',
+              filter: 'blur(5px)',
+              opacity: 0.13,
+            }}
+          >
+            <div className="relative aspect-video overflow-hidden bg-slate-950">
+              <ScreenMedia media={project.media} project={project} tabIndex={-1} />
+            </div>
+          </div>
+
+          {/* Gradient fade — dark floor swallows the reflection */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{ background: 'linear-gradient(to bottom, rgba(2,6,23,0.35) 0%, #020617 58%)' }}
+          />
         </div>
       </div>
 
-      {/* Subtle hint */}
-      <p className="text-center font-mono text-xs text-slate-700 mt-10 tracking-widest uppercase">
-        hover to pause · click to explore
+      {/* ── Navigation ── */}
+      <div className="flex items-center justify-center gap-5 mt-6">
+        <button
+          onClick={() => goTo(idx - 1)}
+          className="p-2 text-slate-600 hover:text-cyan-400 transition-colors"
+          aria-label="Previous project"
+        >
+          <ChevronLeft size={20} />
+        </button>
+
+        {/* Dot indicators */}
+        <div className="flex items-center gap-2">
+          {projects.map((p, i) => (
+            <button
+              key={p.title}
+              onClick={() => goTo(i)}
+              aria-label={p.title}
+              className={`h-1.5 rounded-full transition-all duration-300 ${i === idx ? 'w-7' : 'w-1.5 bg-slate-700 hover:bg-slate-500'}`}
+              style={i === idx ? { backgroundColor: palette[p.highlight].hex } : {}}
+            />
+          ))}
+        </div>
+
+        <button
+          onClick={() => goTo(idx + 1)}
+          className="p-2 text-slate-600 hover:text-cyan-400 transition-colors"
+          aria-label="Next project"
+        >
+          <ChevronRight size={20} />
+        </button>
+      </div>
+
+      <p className="text-center font-mono text-xs text-slate-700 mt-3 tracking-widest uppercase">
+        hover to pause · arrows or dots to navigate
       </p>
     </section>
   )
