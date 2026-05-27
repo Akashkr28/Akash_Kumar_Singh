@@ -1,6 +1,3 @@
-import { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import {
   ExternalLink, Radio, BarChart2, CheckSquare, Layers,
 } from 'lucide-react'
@@ -11,8 +8,6 @@ import {
   SiNextdotjs, SiPostgresql, SiExpress,
 } from 'react-icons/si'
 import type { IconType } from 'react-icons'
-
-gsap.registerPlugin(ScrollTrigger)
 
 /* ─── Types ─────────────────────────────────────────────── */
 interface ProjectMedia {
@@ -253,132 +248,40 @@ function ProjectCard({ project }: { project: Project }) {
 
 /* ─── Main export ────────────────────────────────────────── */
 export default function Projects() {
-  const sectionRef  = useRef<HTMLElement>(null)
-  const lineFillRef = useRef<HTMLDivElement>(null)
-  const dotRefs     = useRef<(HTMLDivElement | null)[]>([])
-  const cardRefs    = useRef<(HTMLDivElement | null)[]>([])
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      /* Line grows as you scroll */
-      gsap.fromTo(lineFillRef.current,
-        { scaleY: 0 },
-        {
-          scaleY: 1, ease: 'none',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 55%',
-            end:   'bottom 65%',
-            scrub: 1.5,
-          },
-        }
-      )
-
-      /* Dots pop in */
-      dotRefs.current.forEach(dot => {
-        if (!dot) return
-        gsap.fromTo(dot,
-          { scale: 0, opacity: 0 },
-          { scale: 1, opacity: 1, duration: 0.5, ease: 'back.out(2.5)',
-            scrollTrigger: { trigger: dot, start: 'top 68%', once: true } }
-        )
-      })
-
-      /* Cards slide in from left / right */
-      cardRefs.current.forEach((card, i) => {
-        if (!card) return
-        gsap.fromTo(card,
-          { x: i % 2 === 0 ? -80 : 80, opacity: 0 },
-          { x: 0, opacity: 1, duration: 0.9, ease: 'power3.out',
-            scrollTrigger: { trigger: card, start: 'top 80%', once: true } }
-        )
-      })
-    }, sectionRef)
-    return () => ctx.revert()
-  }, [])
-
   return (
-    <section id="projects" ref={sectionRef} className="py-28 px-6 relative overflow-hidden">
+    <section id="projects" className="py-28 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-950/5 to-transparent pointer-events-none" />
 
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="mb-20 text-center">
-          <p className="font-mono text-cyan-400 text-xs tracking-[0.3em] uppercase mb-3">02. Projects</p>
-          <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight">Things I've Built</h2>
-          <p className="text-slate-500 mt-2 text-sm">{projects.length} projects · all live and deployed</p>
-        </div>
+      {/* ── Header ── */}
+      <div className="mb-16 text-center px-6">
+        <p className="font-mono text-cyan-400 text-xs tracking-[0.3em] uppercase mb-3">02. Projects</p>
+        <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight">Things I've Built</h2>
+        <p className="text-slate-500 mt-2 text-sm">{projects.length} projects · all live and deployed</p>
+      </div>
 
-        {/* ── Timeline container ── */}
-        <div className="relative">
-
-          {/* Background track */}
-          <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-px bg-slate-800/60 hidden md:block" />
-
-          {/* Animated colour fill */}
-          <div
-            ref={lineFillRef}
-            className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-[2px] origin-top hidden md:block"
-            style={{
-              background: 'linear-gradient(to bottom, #22d3ee 0%, #4ade80 50%, #a78bfa 100%)',
-              transform: 'scaleY(0)',
-            }}
-          />
-
-          {/* Project rows */}
-          <div className="flex flex-col" style={{ gap: '6rem' }}>
-            {projects.map((project, i) => {
-              const isLeft = i % 2 === 0
-              return (
-                <div key={project.title} className="relative">
-
-                  {/* ── Desktop: alternating layout ── */}
-                  <div className="hidden md:flex items-start">
-                    {/* Left half */}
-                    <div className="w-[calc(50%-32px)]">
-                      {isLeft && (
-                        <div ref={el => { cardRefs.current[i] = el }} className="pr-12">
-                          <ProjectCard project={project} />
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Centre dot */}
-                    <div className="w-16 flex justify-center items-start pt-14 shrink-0 z-10">
-                      <div
-                        ref={el => { dotRefs.current[i] = el }}
-                        className="w-4 h-4 rounded-full bg-slate-950 border-2 border-cyan-400 ring-[6px] ring-cyan-400/10"
-                        style={{ transform: 'scale(0)', opacity: 0 }}
-                      />
-                    </div>
-
-                    {/* Right half */}
-                    <div className="w-[calc(50%-32px)]">
-                      {!isLeft && (
-                        <div ref={el => { cardRefs.current[i] = el }} className="pl-12">
-                          <ProjectCard project={project} />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* ── Mobile: single column with left accent ── */}
-                  <div className="flex md:hidden gap-5 items-start">
-                    <div className="flex flex-col items-center gap-0 pt-1 shrink-0">
-                      <div className="w-3 h-3 rounded-full border-2 border-cyan-400 bg-slate-950 shrink-0" />
-                      <div className="flex-1 w-px bg-gradient-to-b from-cyan-400/30 to-transparent mt-1" style={{ minHeight: '100%' }} />
-                    </div>
-                    <div ref={el => { cardRefs.current[i] = el }} className="flex-1 pb-2">
-                      <ProjectCard project={project} />
-                    </div>
-                  </div>
-
-                </div>
-              )
-            })}
-          </div>
+      {/* ── Infinite marquee ── */}
+      {/*  Fade the left/right edges so cards glide in/out of view  */}
+      <div
+        className="relative overflow-hidden"
+        style={{
+          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
+          maskImage:        'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
+        }}
+      >
+        {/* Doubled array → seamless loop: animation moves exactly -50% (= 1 full set) */}
+        <div className="marquee-track flex gap-8 w-max px-8">
+          {[...projects, ...projects].map((project, i) => (
+            <div key={`${project.title}-${i}`} className="w-[420px] shrink-0">
+              <ProjectCard project={project} />
+            </div>
+          ))}
         </div>
       </div>
+
+      {/* Subtle hint */}
+      <p className="text-center font-mono text-xs text-slate-700 mt-10 tracking-widest uppercase">
+        hover to pause · click to explore
+      </p>
     </section>
   )
 }
