@@ -29,11 +29,11 @@ function Stars() {
     <Points ref={ref} positions={positions} stride={3} frustumCulled={false}>
       <PointMaterial
         transparent
-        color="#22d3ee"
+        color="#b45309"
         size={0.012}
         sizeAttenuation
         depthWrite={false}
-        opacity={0.6}
+        opacity={0.45}
       />
     </Points>
   )
@@ -64,11 +64,11 @@ function ConnectionLines() {
     <Points ref={ref} positions={positions} stride={3} frustumCulled={false}>
       <PointMaterial
         transparent
-        color="#4ade80"
+        color="#d97706"
         size={0.018}
         sizeAttenuation
         depthWrite={false}
-        opacity={0.35}
+        opacity={0.25}
       />
     </Points>
   )

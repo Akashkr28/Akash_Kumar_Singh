@@ -4,10 +4,9 @@ import emailjs from '@emailjs/browser'
 import { Send, Mail, CheckCircle, AlertCircle } from 'lucide-react'
 import { GithubIcon, LinkedinIcon } from './BrandIcons'
 
-// Replace these with your actual EmailJS credentials
-const EMAILJS_SERVICE_ID = 'YOUR_SERVICE_ID'
+const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID'
 const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID'
-const EMAILJS_PUBLIC_KEY = 'YOUR_PUBLIC_KEY'
+const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY'
 
 type Status = 'idle' | 'sending' | 'success' | 'error'
 
@@ -31,7 +30,7 @@ export default function Contact() {
   }
 
   return (
-    <section id="contact" className="py-24 px-6 bg-slate-950/50">
+    <section id="contact" className="py-24 px-6 bg-stone-50/80">
       <div className="max-w-4xl mx-auto" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -39,9 +38,9 @@ export default function Contact() {
           transition={{ duration: 0.6 }}
           className="mb-16 text-center"
         >
-          <p className="font-mono text-cyan-400 text-xs tracking-[0.3em] uppercase mb-3">04. Contact</p>
-          <h2 className="text-3xl md:text-4xl font-bold text-white">Get In Touch</h2>
-          <p className="text-slate-400 mt-3 max-w-lg mx-auto text-sm leading-relaxed">
+          <p className="font-mono text-amber-600 text-xs tracking-[0.3em] uppercase mb-3">04. Contact</p>
+          <h2 className="text-3xl md:text-4xl font-bold text-stone-900">Get In Touch</h2>
+          <p className="text-stone-600 mt-3 max-w-lg mx-auto text-sm leading-relaxed">
             I'm open to internships, freelance work, and collaborations. Drop a message and I'll get back to you.
           </p>
         </motion.div>
@@ -55,7 +54,7 @@ export default function Contact() {
             className="space-y-8"
           >
             <div>
-              <h3 className="text-white font-semibold mb-4">Let's connect</h3>
+              <h3 className="text-stone-900 font-semibold mb-4">Let's connect</h3>
               <div className="space-y-4">
                 {[
                   {
@@ -82,13 +81,13 @@ export default function Contact() {
                     href={href}
                     target={href.startsWith('http') ? '_blank' : undefined}
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 text-slate-400 hover:text-cyan-400 transition-colors group"
+                    className="flex items-center gap-3 text-stone-600 hover:text-amber-600 transition-colors group"
                   >
-                    <div className="p-2 bg-slate-900 border border-slate-800 rounded-lg group-hover:border-cyan-400/30 transition-colors">
+                    <div className="p-2 bg-white border border-stone-200 rounded-lg group-hover:border-amber-400/40 transition-colors shadow-sm">
                       <Icon size={16} />
                     </div>
                     <div>
-                      <p className="text-xs text-slate-600 font-mono">{label}</p>
+                      <p className="text-xs text-stone-400 font-mono">{label}</p>
                       <p className="text-sm">{value}</p>
                     </div>
                   </a>
@@ -96,9 +95,9 @@ export default function Contact() {
               </div>
             </div>
 
-            <div className="border-t border-slate-800 pt-6">
-              <p className="text-slate-500 text-sm font-mono">
-                <span className="text-cyan-400">$</span> status: open_to_opportunities
+            <div className="border-t border-stone-200 pt-6">
+              <p className="text-stone-500 text-sm font-mono">
+                <span className="text-amber-600">$</span> status: open_to_opportunities
               </p>
             </div>
           </motion.div>
@@ -111,44 +110,44 @@ export default function Contact() {
           >
             <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-mono text-slate-500 mb-1.5">Name</label>
+                <label className="block text-xs font-mono text-stone-500 mb-1.5">Name</label>
                 <input
                   type="text"
                   name="from_name"
                   required
                   placeholder="Your name"
-                  className="w-full bg-slate-900 border border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-cyan-400/50 transition-colors"
+                  className="w-full bg-white border border-stone-200 rounded-lg px-4 py-3 text-sm text-stone-800 placeholder-stone-400 focus:outline-none focus:border-amber-400/60 transition-colors shadow-sm"
                 />
               </div>
               <div>
-                <label className="block text-xs font-mono text-slate-500 mb-1.5">Email</label>
+                <label className="block text-xs font-mono text-stone-500 mb-1.5">Email</label>
                 <input
                   type="email"
                   name="from_email"
                   required
                   placeholder="your@email.com"
-                  className="w-full bg-slate-900 border border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-cyan-400/50 transition-colors"
+                  className="w-full bg-white border border-stone-200 rounded-lg px-4 py-3 text-sm text-stone-800 placeholder-stone-400 focus:outline-none focus:border-amber-400/60 transition-colors shadow-sm"
                 />
               </div>
               <div>
-                <label className="block text-xs font-mono text-slate-500 mb-1.5">Message</label>
+                <label className="block text-xs font-mono text-stone-500 mb-1.5">Message</label>
                 <textarea
                   name="message"
                   required
                   rows={5}
                   placeholder="What's on your mind?"
-                  className="w-full bg-slate-900 border border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-cyan-400/50 transition-colors resize-none"
+                  className="w-full bg-white border border-stone-200 rounded-lg px-4 py-3 text-sm text-stone-800 placeholder-stone-400 focus:outline-none focus:border-amber-400/60 transition-colors resize-none shadow-sm"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={status === 'sending'}
-                className="w-full flex items-center justify-center gap-2 bg-cyan-400 text-slate-950 font-semibold py-3 rounded-lg text-sm hover:bg-cyan-300 transition-colors disabled:opacity-60 disabled:cursor-not-allowed font-mono"
+                className="w-full flex items-center justify-center gap-2 bg-amber-500 text-white font-semibold py-3 rounded-lg text-sm hover:bg-amber-400 transition-colors disabled:opacity-60 disabled:cursor-not-allowed font-mono"
               >
                 {status === 'sending' ? (
                   <>
-                    <span className="animate-spin rounded-full border-2 border-slate-950 border-t-transparent w-4 h-4" />
+                    <span className="animate-spin rounded-full border-2 border-white border-t-transparent w-4 h-4" />
                     Sending...
                   </>
                 ) : (
@@ -162,7 +161,7 @@ export default function Contact() {
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="flex items-center gap-2 text-green-400 text-sm"
+                  className="flex items-center gap-2 text-green-600 text-sm"
                 >
                   <CheckCircle size={16} /> Message sent! I'll get back to you soon.
                 </motion.div>
@@ -171,7 +170,7 @@ export default function Contact() {
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="flex items-center gap-2 text-red-400 text-sm"
+                  className="flex items-center gap-2 text-red-600 text-sm"
                 >
                   <AlertCircle size={16} /> Something went wrong. Try emailing directly.
                 </motion.div>
