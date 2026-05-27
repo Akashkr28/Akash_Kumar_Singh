@@ -45,14 +45,14 @@ const techIcons: Record<string, IconType> = {
   'Express':    SiExpress,
 }
 
-/* ─── Colour palette (light-theme readable) ─────────────── */
+/* ─── Colour palette ─────────────────────────────────────── */
 const palette = {
-  cyan:   { rgb: '2,132,199',   text: 'text-sky-600',    bg: 'bg-sky-50',    hex: '#0284c7' },
-  green:  { rgb: '22,163,74',   text: 'text-green-600',  bg: 'bg-green-50',  hex: '#16a34a' },
-  violet: { rgb: '124,58,237',  text: 'text-violet-600', bg: 'bg-violet-50', hex: '#7c3aed' },
-  amber:  { rgb: '217,119,6',   text: 'text-amber-600',  bg: 'bg-amber-50',  hex: '#d97706' },
-  rose:   { rgb: '225,29,72',   text: 'text-rose-600',   bg: 'bg-rose-50',   hex: '#e11d48' },
-  sky:    { rgb: '2,132,199',   text: 'text-sky-600',    bg: 'bg-sky-50',    hex: '#0284c7' },
+  cyan:   { rgb: '34,211,238',  text: 'text-cyan-400',   bg: 'bg-cyan-400/10',   hex: '#22d3ee' },
+  green:  { rgb: '74,222,128',  text: 'text-green-400',  bg: 'bg-green-400/10',  hex: '#4ade80' },
+  violet: { rgb: '167,139,250', text: 'text-violet-400', bg: 'bg-violet-400/10', hex: '#a78bfa' },
+  amber:  { rgb: '251,191,36',  text: 'text-amber-400',  bg: 'bg-amber-400/10',  hex: '#fbbf24' },
+  rose:   { rgb: '251,113,133', text: 'text-rose-400',   bg: 'bg-rose-400/10',   hex: '#fb7185' },
+  sky:    { rgb: '56,189,248',  text: 'text-sky-400',    bg: 'bg-sky-400/10',    hex: '#38bdf8' },
 }
 
 /* ─── Project data ───────────────────────────────────────── */
@@ -173,13 +173,13 @@ export default function Projects() {
 
   return (
     <section id="projects" className="py-28 px-6 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-stone-100/40 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-950/5 to-transparent pointer-events-none" />
 
       {/* ── Header ── */}
       <div className="mb-14 text-center">
-        <p className="font-mono text-amber-600 text-xs tracking-[0.3em] uppercase mb-3">02. Projects</p>
-        <h2 className="text-3xl md:text-4xl font-bold text-stone-900 tracking-tight">Things I've Built</h2>
-        <p className="text-stone-500 mt-2 text-sm">{projects.length} projects · all live and deployed</p>
+        <p className="font-mono text-cyan-400 text-xs tracking-[0.3em] uppercase mb-3">02. Projects</p>
+        <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight">Things I've Built</h2>
+        <p className="text-slate-500 mt-2 text-sm">{projects.length} projects · all live and deployed</p>
       </div>
 
       {/* ── 3-D monitor wrapper ── */}
@@ -195,24 +195,24 @@ export default function Projects() {
           onMouseLeave={() => setPaused(false)}
         >
           {/* Auto-advance progress bar — sits above the screen */}
-          <div className="h-[2px] rounded-t-full overflow-hidden bg-stone-200 mb-0">
+          <div className="h-[2px] rounded-t-full overflow-hidden bg-slate-800/60 mb-0">
             <div
               className="h-full rounded-full transition-none"
               style={{
                 width: `${prog * 100}%`,
-                background: `linear-gradient(to right, ${cls.hex}, #f59e0b)`,
+                background: `linear-gradient(to right, ${cls.hex}, #a78bfa)`,
                 transition: paused ? 'none' : undefined,
               }}
             />
           </div>
 
-          {/* Screen body — stays dark (it IS the monitor display) */}
+          {/* Screen body */}
           <div
-            className="rounded-xl overflow-hidden border border-stone-300/60 bg-slate-950 shadow-2xl"
+            className="rounded-xl overflow-hidden border border-slate-700/30 bg-slate-950 shadow-2xl"
             style={{
-              boxShadow: `0 0 0 1px rgba(255,255,255,0.06),
-                          0 40px 80px rgba(0,0,0,0.30),
-                          0 0 60px rgba(${cls.rgb},0.08)`,
+              boxShadow: `0 0 0 1px rgba(255,255,255,0.04),
+                          0 50px 100px rgba(0,0,0,0.75),
+                          0 0 80px rgba(${cls.rgb},0.07)`,
             }}
           >
             {/* ── Video / media area ── */}
@@ -242,7 +242,7 @@ export default function Projects() {
                 style={{ boxShadow: 'inset 0 0 40px rgba(0,0,0,0.55)' }} />
             </div>
 
-            {/* ── Project info (inside the dark screen, below video) ── */}
+            {/* ── Project info (inside the screen, below video) ── */}
             <AnimatePresence mode="wait">
               <motion.div
                 key={`info-${project.title}`}
@@ -269,7 +269,7 @@ export default function Projects() {
                     return Icon ? (
                       <div key={t} title={t}
                         className="p-1.5 rounded-lg bg-slate-800/80 border border-slate-700/50 hover:border-slate-600 transition-all hover:scale-110">
-                        <Icon size={13} color={cls.hex} style={{ opacity: 0.85 }} />
+                        <Icon size={13} color={cls.hex} style={{ opacity: 0.8 }} />
                       </div>
                     ) : (
                       <span key={t}
@@ -308,7 +308,7 @@ export default function Projects() {
             className="absolute bottom-0 w-px h-14 origin-bottom"
             style={{
               left: 'calc(50% - 56px)',
-              background: 'linear-gradient(to bottom, rgba(120,113,108,0.5), rgba(120,113,108,0.1))',
+              background: 'linear-gradient(to bottom, rgba(100,116,139,0.6), rgba(51,65,85,0.2))',
               transform: 'rotate(-14deg)',
             }}
           />
@@ -317,14 +317,14 @@ export default function Projects() {
             className="absolute bottom-0 w-px h-14 origin-bottom"
             style={{
               right: 'calc(50% - 56px)',
-              background: 'linear-gradient(to bottom, rgba(120,113,108,0.5), rgba(120,113,108,0.1))',
+              background: 'linear-gradient(to bottom, rgba(100,116,139,0.6), rgba(51,65,85,0.2))',
               transform: 'rotate(14deg)',
             }}
           />
           {/* Base bar */}
           <div
             className="absolute bottom-0 left-1/2 -translate-x-1/2 h-px w-36 rounded-full"
-            style={{ background: 'linear-gradient(to right, transparent, rgba(120,113,108,0.4), transparent)' }}
+            style={{ background: 'linear-gradient(to right, transparent, rgba(100,116,139,0.45), transparent)' }}
           />
         </div>
 
@@ -332,12 +332,12 @@ export default function Projects() {
         <div className="relative overflow-hidden h-28 -mt-px">
           {/* Flipped, blurred, faded duplicate of the media only */}
           <div
-            className="rounded-xl overflow-hidden border border-stone-300/15"
+            className="rounded-xl overflow-hidden border border-slate-700/10"
             style={{
               transform: 'scaleY(-1) scaleX(0.97)',
               transformOrigin: 'top center',
               filter: 'blur(5px)',
-              opacity: 0.10,
+              opacity: 0.13,
             }}
           >
             <div className="relative aspect-video overflow-hidden bg-slate-950">
@@ -345,10 +345,10 @@ export default function Projects() {
             </div>
           </div>
 
-          {/* Gradient fade — warm cream floor swallows the reflection */}
+          {/* Gradient fade — dark floor swallows the reflection */}
           <div
             className="absolute inset-0 pointer-events-none"
-            style={{ background: 'linear-gradient(to bottom, rgba(249,248,244,0.30) 0%, #f9f8f4 58%)' }}
+            style={{ background: 'linear-gradient(to bottom, rgba(2,6,23,0.35) 0%, #020617 58%)' }}
           />
         </div>
       </div>
@@ -357,7 +357,7 @@ export default function Projects() {
       <div className="flex items-center justify-center gap-5 mt-6">
         <button
           onClick={() => goTo(idx - 1)}
-          className="p-2 text-stone-400 hover:text-amber-600 transition-colors"
+          className="p-2 text-slate-600 hover:text-cyan-400 transition-colors"
           aria-label="Previous project"
         >
           <ChevronLeft size={20} />
@@ -370,7 +370,7 @@ export default function Projects() {
               key={p.title}
               onClick={() => goTo(i)}
               aria-label={p.title}
-              className={`h-1.5 rounded-full transition-all duration-300 ${i === idx ? 'w-7' : 'w-1.5 bg-stone-300 hover:bg-stone-400'}`}
+              className={`h-1.5 rounded-full transition-all duration-300 ${i === idx ? 'w-7' : 'w-1.5 bg-slate-700 hover:bg-slate-500'}`}
               style={i === idx ? { backgroundColor: palette[p.highlight].hex } : {}}
             />
           ))}
@@ -378,14 +378,14 @@ export default function Projects() {
 
         <button
           onClick={() => goTo(idx + 1)}
-          className="p-2 text-stone-400 hover:text-amber-600 transition-colors"
+          className="p-2 text-slate-600 hover:text-cyan-400 transition-colors"
           aria-label="Next project"
         >
           <ChevronRight size={20} />
         </button>
       </div>
 
-      <p className="text-center font-mono text-xs text-stone-400 mt-3 tracking-widest uppercase">
+      <p className="text-center font-mono text-xs text-slate-700 mt-3 tracking-widest uppercase">
         hover to pause · arrows or dots to navigate
       </p>
     </section>

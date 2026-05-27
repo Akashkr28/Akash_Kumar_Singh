@@ -116,15 +116,15 @@ const milestones: Milestone[] = [
   },
 ]
 
-/* ─── Config per type (light-theme readable hex) ─────────── */
+/* ─── Config per type ────────────────────────────────────── */
 const typeConfig: Record<MilestoneType, {
   rgb: string; hex: string; label: string; Icon: React.ComponentType<{ size?: number }>
 }> = {
-  education: { rgb: '2,132,199',   hex: '#0284c7', label: 'Education',  Icon: GraduationCap },
-  work:      { rgb: '217,119,6',   hex: '#d97706', label: 'Experience', Icon: Briefcase    },
-  pivot:     { rgb: '124,58,237',  hex: '#7c3aed', label: 'Pivot',      Icon: Lightbulb    },
-  tech:      { rgb: '22,163,74',   hex: '#16a34a', label: 'Tech',       Icon: Cpu          },
-  current:   { rgb: '217,119,6',   hex: '#d97706', label: 'Current',    Icon: TrendingUp   },
+  education: { rgb: '34,211,238',  hex: '#22d3ee', label: 'Education',  Icon: GraduationCap },
+  work:      { rgb: '251,191,36',  hex: '#fbbf24', label: 'Experience', Icon: Briefcase    },
+  pivot:     { rgb: '167,139,250', hex: '#a78bfa', label: 'Pivot',      Icon: Lightbulb    },
+  tech:      { rgb: '74,222,128',  hex: '#4ade80', label: 'Tech',       Icon: Cpu          },
+  current:   { rgb: '56,189,248',  hex: '#38bdf8', label: 'Current',    Icon: TrendingUp   },
 }
 
 /* ─── Single milestone card ─────────────────────────────── */
@@ -163,8 +163,8 @@ function MilestoneCard({ milestone, index }: { milestone: Milestone; index: numb
             className="w-5 h-5 rounded-full border-2 flex items-center justify-center z-10 relative"
             style={{
               borderColor: cfg.hex,
-              backgroundColor: '#f9f8f4',
-              boxShadow: `0 0 14px ${cfg.hex}50`,
+              backgroundColor: '#020617',
+              boxShadow: `0 0 14px ${cfg.hex}60`,
             }}
           >
             <div className="w-2 h-2 rounded-full" style={{ backgroundColor: cfg.hex }} />
@@ -194,7 +194,7 @@ function MilestoneCard({ milestone, index }: { milestone: Milestone; index: numb
             animate={inView ? { scale: 1, opacity: 1 } : {}}
             transition={{ duration: 0.4, type: 'spring', stiffness: 260 }}
             className="w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0"
-            style={{ borderColor: cfg.hex, backgroundColor: '#f9f8f4' }}
+            style={{ borderColor: cfg.hex, backgroundColor: '#020617' }}
           >
             <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: cfg.hex }} />
           </motion.div>
@@ -223,12 +223,12 @@ function Card({
   const { Icon } = cfg
   return (
     <div
-      className="rounded-2xl border border-stone-200 bg-white shadow-sm p-6 transition-all duration-300 group"
+      className="rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm p-6 transition-all duration-300 hover:border-opacity-60 group"
       style={{ '--brand': cfg.hex } as React.CSSProperties}
       onMouseEnter={e => {
         const el = e.currentTarget as HTMLElement
-        el.style.borderColor = `${cfg.hex}55`
-        el.style.boxShadow = `0 0 28px ${cfg.hex}14`
+        el.style.borderColor = `${cfg.hex}40`
+        el.style.boxShadow = `0 0 32px ${cfg.hex}18`
       }}
       onMouseLeave={e => {
         const el = e.currentTarget as HTMLElement
@@ -252,21 +252,21 @@ function Card({
             >
               {cfg.label}
             </span>
-            <span className="text-[11px] font-mono text-stone-400">{milestone.period}</span>
+            <span className="text-[11px] font-mono text-slate-500">{milestone.period}</span>
           </div>
-          <h3 className="text-stone-900 font-bold text-base leading-snug">{milestone.title}</h3>
+          <h3 className="text-white font-bold text-base leading-snug">{milestone.title}</h3>
           <p className="text-xs font-mono mt-0.5" style={{ color: cfg.hex }}>{milestone.place}</p>
         </div>
       </div>
 
       {/* Description */}
-      <p className="text-stone-600 text-sm leading-relaxed">{milestone.desc}</p>
+      <p className="text-slate-400 text-sm leading-relaxed">{milestone.desc}</p>
 
       {/* Bullet list */}
       {milestone.bullets && (
         <ul className="mt-3 space-y-1.5">
           {milestone.bullets.map(b => (
-            <li key={b} className="flex items-center gap-2 text-stone-700 text-sm">
+            <li key={b} className="flex items-center gap-2 text-slate-300 text-sm">
               <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: cfg.hex }} />
               {b}
             </li>
@@ -276,7 +276,7 @@ function Card({
 
       {/* Note */}
       {milestone.note && (
-        <p className="mt-3 text-xs text-stone-400 italic leading-relaxed border-t border-stone-200 pt-3">
+        <p className="mt-3 text-xs text-slate-500 italic leading-relaxed border-t border-slate-800 pt-3">
           {milestone.note}
         </p>
       )}
@@ -351,12 +351,12 @@ export default function Journey() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-[#f9f8f4] relative overflow-x-hidden">
+    <div className="min-h-screen bg-slate-950 relative overflow-x-hidden">
 
       {/* Ambient top glow */}
       <div className="pointer-events-none fixed inset-0 z-0">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full blur-[120px] opacity-10"
-          style={{ background: 'radial-gradient(ellipse, #d97706 0%, #f59e0b 60%, transparent 100%)' }} />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full blur-[120px] opacity-20"
+          style={{ background: 'radial-gradient(ellipse, #22d3ee 0%, #4ade80 60%, transparent 100%)' }} />
       </div>
 
       {/* ── Fixed top bar ── */}
@@ -364,17 +364,17 @@ export default function Journey() {
         initial={{ y: -60, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="fixed top-0 left-0 right-0 z-50 bg-[#f9f8f4]/90 backdrop-blur-md border-b border-stone-200 shadow-sm"
+        className="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/60"
       >
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link
             to="/"
-            className="flex items-center gap-2 text-stone-500 hover:text-amber-600 transition-colors text-sm font-mono group"
+            className="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors text-sm font-mono group"
           >
             <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
             Back to Portfolio
           </Link>
-          <span className="font-mono text-amber-600 text-sm font-bold tracking-wider">&lt;AKS /&gt;</span>
+          <span className="font-mono text-cyan-400 text-sm font-bold tracking-wider">&lt;AKS /&gt;</span>
         </div>
       </motion.header>
 
@@ -385,22 +385,22 @@ export default function Journey() {
           animate={heroInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7 }}
         >
-          <p className="font-mono text-amber-600 text-xs tracking-[0.35em] uppercase mb-5">
+          <p className="font-mono text-cyan-400 text-xs tracking-[0.35em] uppercase mb-5">
             A Personal Timeline
           </p>
           <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-6">
-            <span className="text-stone-900">From </span>
+            <span className="text-white">From </span>
             <span style={{
-              background: 'linear-gradient(135deg, #d97706 0%, #b45309 50%, #92400e 100%)',
+              background: 'linear-gradient(135deg, #fbbf24 0%, #f97316 40%, #22d3ee 80%, #4ade80 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
             }}>
               Commerce
             </span>
-            <span className="text-stone-900"> to </span>
+            <span className="text-white"> to </span>
             <span style={{
-              background: 'linear-gradient(135deg, #0284c7 0%, #7c3aed 60%, #16a34a 100%)',
+              background: 'linear-gradient(135deg, #22d3ee 0%, #4ade80 60%, #a78bfa 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
@@ -408,7 +408,7 @@ export default function Journey() {
               Tech
             </span>
           </h1>
-          <p className="text-stone-600 text-base md:text-lg max-w-xl mx-auto leading-relaxed">
+          <p className="text-slate-400 text-base md:text-lg max-w-xl mx-auto leading-relaxed">
             A decade of discipline, reinvention, and relentless growth — from ledgers and balance sheets to distributed systems and AI.
           </p>
         </motion.div>
@@ -423,7 +423,7 @@ export default function Journey() {
           {(Object.entries(typeConfig) as [MilestoneType, typeof typeConfig[MilestoneType]][]).map(([, cfg]) => (
             <div key={cfg.label} className="flex items-center gap-2">
               <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: cfg.hex }} />
-              <span className="text-xs font-mono text-stone-500">{cfg.label}</span>
+              <span className="text-xs font-mono text-slate-500">{cfg.label}</span>
             </div>
           ))}
         </motion.div>
@@ -433,13 +433,13 @@ export default function Journey() {
           initial={{ opacity: 0 }}
           animate={heroInView ? { opacity: 1 } : {}}
           transition={{ delay: 0.8 }}
-          className="mt-12 flex flex-col items-center gap-2 text-stone-400"
+          className="mt-12 flex flex-col items-center gap-2 text-slate-600"
         >
           <span className="text-xs font-mono tracking-widest uppercase">Scroll to explore</span>
           <motion.div
             animate={{ y: [0, 8, 0] }}
             transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }}
-            className="w-px h-8 bg-gradient-to-b from-amber-500/60 to-transparent"
+            className="w-px h-8 bg-gradient-to-b from-cyan-400/60 to-transparent"
           />
         </motion.div>
       </section>
@@ -457,22 +457,22 @@ export default function Journey() {
             >
               <defs>
                 <linearGradient id="journeyWaveGrad" x1="0" y1="0%" x2="0" y2="100%">
-                  <stop offset="0%"   stopColor="#0284c7" />
-                  <stop offset="28%"  stopColor="#d97706" />
-                  <stop offset="55%"  stopColor="#7c3aed" />
-                  <stop offset="78%"  stopColor="#16a34a" />
-                  <stop offset="100%" stopColor="#d97706" />
+                  <stop offset="0%"   stopColor="#22d3ee" />
+                  <stop offset="28%"  stopColor="#fbbf24" />
+                  <stop offset="55%"  stopColor="#a78bfa" />
+                  <stop offset="78%"  stopColor="#4ade80" />
+                  <stop offset="100%" stopColor="#38bdf8" />
                 </linearGradient>
                 <filter id="waveGlow">
                   <feGaussianBlur stdDeviation="3" result="blur" />
                   <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
                 </filter>
               </defs>
-              {/* Stone track — always shown */}
+              {/* Grey track — always shown */}
               <path
                 ref={bgPathRef}
                 fill="none"
-                stroke="rgba(120,113,108,0.25)"
+                stroke="rgba(30,41,59,0.55)"
                 strokeWidth="1.5"
                 strokeLinecap="round"
               />
@@ -504,12 +504,12 @@ export default function Journey() {
               className="flex flex-col items-center gap-3"
             >
               <div
-                className="w-8 h-8 rounded-full border-2 border-amber-500 flex items-center justify-center"
-                style={{ boxShadow: '0 0 20px rgba(217,119,6,0.35)', backgroundColor: '#f9f8f4' }}
+                className="w-8 h-8 rounded-full border-2 border-cyan-400 flex items-center justify-center"
+                style={{ boxShadow: '0 0 24px #22d3ee60', backgroundColor: '#020617' }}
               >
-                <TrendingUp size={14} className="text-amber-600" />
+                <TrendingUp size={14} className="text-cyan-400" />
               </div>
-              <p className="font-mono text-xs text-amber-600 tracking-widest uppercase">Still Writing</p>
+              <p className="font-mono text-xs text-cyan-400 tracking-widest uppercase">Still Writing</p>
             </motion.div>
           </div>
         </div>
@@ -524,12 +524,12 @@ export default function Journey() {
           transition={{ duration: 0.6 }}
           className="max-w-lg mx-auto"
         >
-          <p className="text-stone-500 text-sm font-mono mb-6">
+          <p className="text-slate-500 text-sm font-mono mb-6">
             The journey continues — one commit at a time.
           </p>
           <Link
             to="/"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-mono font-semibold text-white bg-amber-500 hover:bg-amber-400 transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-mono font-semibold text-slate-950 bg-cyan-400 hover:bg-cyan-300 transition-colors"
           >
             <ArrowLeft size={15} />
             Back to Portfolio

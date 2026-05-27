@@ -44,7 +44,7 @@ export default function Hero() {
     const x = e.clientX - rect.left
     const y = e.clientY - rect.top
     spotRef.current.style.background =
-      `radial-gradient(600px circle at ${x}px ${y}px, rgba(217,119,6,0.06), transparent 70%)`
+      `radial-gradient(600px circle at ${x}px ${y}px, rgba(34,211,238,0.07), transparent 70%)`
   }, [])
 
   const scrollTo = (id: string) =>
@@ -56,22 +56,22 @@ export default function Hero() {
     const glare = glareRef.current
     if (!card) return
     const rect = card.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
-    const normX = (x / rect.width  - 0.5)
-    const normY = (y / rect.height - 0.5)
-    const rotY =  normX * 22
+    const x = e.clientX - rect.left          // px from left edge
+    const y = e.clientY - rect.top           // px from top edge
+    const normX = (x / rect.width  - 0.5)   // -0.5 … +0.5
+    const normY = (y / rect.height - 0.5)   // -0.5 … +0.5
+    const rotY =  normX * 22                 // degrees
     const rotX = -normY * 16
     card.style.transform = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.03,1.03,1.03)`
     card.style.boxShadow = `
-      ${-normX * 24}px ${-normY * 24}px 60px rgba(217,119,6,0.18),
-      0 0 120px rgba(217,119,6,0.08),
-      0 32px 64px rgba(120,113,108,0.15)
+      ${-normX * 24}px ${-normY * 24}px 60px rgba(34,211,238,0.22),
+      0 0 120px rgba(167,139,250,0.12),
+      0 32px 64px rgba(0,0,0,0.55)
     `
     if (glare) {
       const gx = ((x / rect.width)  * 100).toFixed(1)
       const gy = ((y / rect.height) * 100).toFixed(1)
-      glare.style.background = `radial-gradient(circle at ${gx}% ${gy}%, rgba(255,255,255,0.22) 0%, transparent 65%)`
+      glare.style.background = `radial-gradient(circle at ${gx}% ${gy}%, rgba(255,255,255,0.18) 0%, transparent 65%)`
     }
   }, [])
 
@@ -80,7 +80,7 @@ export default function Hero() {
     const glare = glareRef.current
     if (!card) return
     card.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)'
-    card.style.boxShadow = '0 0 60px rgba(217,119,6,0.15), 0 0 120px rgba(217,119,6,0.08), 0 32px 64px rgba(120,113,108,0.12)'
+    card.style.boxShadow = '0 0 60px rgba(34,211,238,0.20), 0 0 120px rgba(167,139,250,0.10), 0 32px 64px rgba(0,0,0,0.5)'
     if (glare) glare.style.background = 'transparent'
   }, [])
 
@@ -92,8 +92,8 @@ export default function Hero() {
     >
       <ParticleField />
       <div ref={spotRef} className="absolute inset-0 pointer-events-none transition-none z-[1]" />
-      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-amber-400/[0.06] rounded-full blur-3xl pointer-events-none z-[1]" />
-      <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-yellow-400/[0.04] rounded-full blur-3xl pointer-events-none z-[1]" />
+      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-cyan-500/[0.04] rounded-full blur-3xl pointer-events-none z-[1]" />
+      <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-violet-500/[0.04] rounded-full blur-3xl pointer-events-none z-[1]" />
 
       {/* ── Two-column layout ── */}
       <div className="relative z-10 w-full max-w-6xl mx-auto px-6 py-28 flex flex-col md:flex-row items-center justify-between gap-12">
@@ -105,7 +105,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="font-mono text-amber-600 text-sm tracking-[0.3em] uppercase mb-6"
+            className="font-mono text-cyan-400 text-sm tracking-[0.3em] uppercase mb-6"
           >
             &gt; Hello, World! I'm
           </motion.p>
@@ -118,14 +118,14 @@ export default function Hero() {
           >
             <span className="gradient-text">Akash Kumar</span>
             <br />
-            <span className="text-stone-900">Singh</span>
+            <span className="text-white">Singh</span>
           </motion.h1>
 
           <motion.div
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ delay: 0.85, duration: 0.6, ease: 'easeOut' }}
-            className="w-24 h-0.5 bg-gradient-to-r from-amber-500 to-yellow-500 mb-6 origin-left"
+            className="w-24 h-0.5 bg-gradient-to-r from-cyan-400 to-green-400 mb-6 origin-left"
           />
 
           <motion.div
@@ -134,9 +134,9 @@ export default function Hero() {
             transition={{ delay: 0.7 }}
             className="h-8 mb-8"
           >
-            <span className="font-mono text-stone-700 text-lg md:text-xl">
+            <span className="font-mono text-slate-300 text-lg md:text-xl">
               {displayed}
-              <span className="animate-pulse text-amber-500">_</span>
+              <span className="animate-pulse text-cyan-400">_</span>
             </span>
           </motion.div>
 
@@ -144,7 +144,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9, duration: 0.6 }}
-            className="text-stone-600 text-base md:text-lg max-w-lg mb-10 leading-relaxed"
+            className="text-slate-400 text-base md:text-lg max-w-lg mb-10 leading-relaxed"
           >
             MCA student at Amity University Online, building real-time web apps with Kafka,
             React, and modern tooling. Currently exploring mobile development.
@@ -160,16 +160,16 @@ export default function Hero() {
               onClick={() => scrollTo('projects')}
               className="relative px-7 py-3 font-semibold text-sm font-mono rounded overflow-hidden group"
             >
-              <span className="absolute inset-0 bg-amber-500 group-hover:bg-amber-400 transition-colors duration-200" />
+              <span className="absolute inset-0 bg-cyan-400 group-hover:bg-cyan-300 transition-colors duration-200" />
               <span
                 className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                 style={{ background: 'linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.25) 50%, transparent 80%)' }}
               />
-              <span className="relative text-white">View Projects</span>
+              <span className="relative text-slate-950">View Projects</span>
             </button>
             <button
               onClick={() => scrollTo('contact')}
-              className="px-7 py-3 border border-amber-400/50 text-amber-700 font-semibold rounded text-sm hover:bg-amber-50 hover:border-amber-500 transition-all duration-200 font-mono"
+              className="px-7 py-3 border border-cyan-400/40 text-cyan-400 font-semibold rounded text-sm hover:bg-cyan-400/8 hover:border-cyan-400/70 transition-all duration-200 font-mono"
             >
               Get In Touch
             </button>
@@ -192,7 +192,7 @@ export default function Hero() {
                 target={href.startsWith('http') ? '_blank' : undefined}
                 rel="noopener noreferrer"
                 aria-label={label}
-                className="text-stone-400 hover:text-amber-600 transition-all duration-200 hover:scale-110"
+                className="text-slate-500 hover:text-cyan-400 transition-all duration-200 hover:scale-110"
               >
                 <Icon size={22} />
               </a>
@@ -200,7 +200,7 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* ── RIGHT: photo card ── */}
+        {/* ── RIGHT: photo card (Alex Stark style) ── */}
         <motion.div
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
@@ -219,8 +219,8 @@ export default function Hero() {
               onMouseLeave={handle3DLeave}
               className="p-[3px] rounded-[2rem] shadow-2xl relative"
               style={{
-                background: 'linear-gradient(145deg, #d97706 0%, #ca8a04 40%, #b45309 75%, #d97706 100%)',
-                boxShadow: '0 0 60px rgba(217,119,6,0.15), 0 0 120px rgba(217,119,6,0.08), 0 32px 64px rgba(120,113,108,0.12)',
+                background: 'linear-gradient(145deg, #22d3ee 0%, #4ade80 40%, #a78bfa 75%, #22d3ee 100%)',
+                boxShadow: '0 0 60px rgba(34,211,238,0.20), 0 0 120px rgba(167,139,250,0.10), 0 32px 64px rgba(0,0,0,0.5)',
                 transformStyle: 'preserve-3d',
                 transition: 'transform 0.18s ease, box-shadow 0.18s ease',
               }}
@@ -237,7 +237,10 @@ export default function Hero() {
                 <div
                   ref={glareRef}
                   className="absolute inset-0 rounded-[calc(2rem-3px)] pointer-events-none"
-                  style={{ mixBlendMode: 'overlay', transition: 'background 0.08s ease' }}
+                  style={{
+                    mixBlendMode: 'overlay',
+                    transition: 'background 0.08s ease',
+                  }}
                 />
               </div>
             </div>
@@ -247,10 +250,10 @@ export default function Hero() {
               initial={{ opacity: 0, scale: 0.7 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 1.3, type: 'spring', stiffness: 220 }}
-              className="absolute -top-3 -right-3 flex items-center gap-2 bg-white/95 border border-amber-400/40 rounded-2xl px-3 py-1.5 shadow-lg backdrop-blur-sm"
+              className="absolute -top-3 -right-3 flex items-center gap-2 bg-slate-900/95 border border-green-400/40 rounded-2xl px-3 py-1.5 shadow-xl backdrop-blur-sm"
             >
-              <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse shrink-0" />
-              <span className="text-xs font-mono text-stone-700">Open to work</span>
+              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse shrink-0" />
+              <span className="text-xs font-mono text-slate-300">Open to work</span>
             </motion.div>
 
             {/* Badge — MCA · AI & ML */}
@@ -258,9 +261,9 @@ export default function Hero() {
               initial={{ opacity: 0, scale: 0.7 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 1.6, type: 'spring', stiffness: 220 }}
-              className="absolute -bottom-3 -left-3 flex items-center gap-2 bg-white/95 border border-amber-400/40 rounded-2xl px-3 py-1.5 shadow-lg backdrop-blur-sm"
+              className="absolute -bottom-3 -left-3 flex items-center gap-2 bg-slate-900/95 border border-cyan-400/40 rounded-2xl px-3 py-1.5 shadow-xl backdrop-blur-sm"
             >
-              <span className="text-xs font-mono text-stone-700">MCA · AI & ML</span>
+              <span className="text-xs font-mono text-slate-300">MCA · AI & ML</span>
             </motion.div>
           </motion.div>
         </motion.div>
@@ -272,7 +275,7 @@ export default function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.8 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-stone-400 z-10"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-slate-600 z-10"
       >
         <span className="text-xs font-mono tracking-widest uppercase">Scroll</span>
         <motion.div animate={{ y: [0, 7, 0] }} transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }}>
