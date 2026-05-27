@@ -2,14 +2,12 @@ import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import {
-  ExternalLink, Radio, BarChart2, CheckSquare,
-  MessageSquare, CloudRain, Layers, Smartphone,
+  ExternalLink, Radio, BarChart2, CheckSquare, Layers,
 } from 'lucide-react'
 import { GithubIcon } from './BrandIcons'
 import {
-  SiReact, SiTypescript, SiNodedotjs, SiMongodb, SiRedis,
-  SiApachekafka, SiSocketdotio, SiOpenai, SiTailwindcss,
-  SiVite, SiExpo, SiLeaflet, SiChartdotjs, SiJavascript,
+  SiReact, SiTypescript, SiNodedotjs, SiRedis,
+  SiApachekafka, SiLeaflet, SiJavascript,
   SiNextdotjs, SiPostgresql, SiExpress,
 } from 'react-icons/si'
 import type { IconType } from 'react-icons'
@@ -41,25 +39,16 @@ interface Project {
 
 /* ─── Tech icon lookup ───────────────────────────────────── */
 const techIcons: Record<string, IconType> = {
-  'React':        SiReact,
-  'React Native': SiReact,
-  'TypeScript':   SiTypescript,
-  'JavaScript':   SiJavascript,
-  'Node.js':      SiNodedotjs,
-  'MongoDB':      SiMongodb,
-  'Redis':        SiRedis,
-  'Kafka':        SiApachekafka,
-  'Socket.io':    SiSocketdotio,
-  'OpenAI API':   SiOpenai,
-  'Tailwind CSS': SiTailwindcss,
-  'Tailwind':     SiTailwindcss,
-  'Vite':         SiVite,
-  'Expo':         SiExpo,
-  'Leaflet.js':   SiLeaflet,
-  'Chart.js':     SiChartdotjs,
-  'Next.js':      SiNextdotjs,
-  'PostgreSQL':   SiPostgresql,
-  'Express':      SiExpress,
+  'React':      SiReact,
+  'TypeScript': SiTypescript,
+  'JavaScript': SiJavascript,
+  'Node.js':    SiNodedotjs,
+  'Redis':      SiRedis,
+  'Kafka':      SiApachekafka,
+  'Leaflet.js': SiLeaflet,
+  'Next.js':    SiNextdotjs,
+  'PostgreSQL': SiPostgresql,
+  'Express':    SiExpress,
 }
 
 /* ─── Colour palette ─────────────────────────────────────── */
@@ -109,33 +98,6 @@ const projects: Project[] = [
     githubUrl: 'https://github.com/Akashkr28/ChaiForm_Form_Builder_SaaS',
     icon: <Layers size={28} />, highlight: 'amber', badge: 'SaaS',
     media: { type: 'youtube', videoId: 'vEyni4YnQAw' },
-  },
-  {
-    title: 'Real-time Chat App',
-    shortDesc: 'Chat rooms, private DMs, typing indicators, and read receipts. Built on Socket.io with JWT auth and MongoDB persistence.',
-    tech: ['React', 'Socket.io', 'Node.js', 'MongoDB'],
-    liveUrl: 'https://chat-akash.vercel.app',           // ← replace with real URL
-    githubUrl: 'https://github.com/Akashkr28/realtime-chat',
-    icon: <MessageSquare size={28} />, highlight: 'sky', badge: 'WebSockets',
-    // media: { type: 'video', src: '/previews/chat-app.mp4' },
-  },
-  {
-    title: 'Weather Dashboard',
-    shortDesc: '7-day forecasts, hourly charts, geolocation, and city search powered by OpenWeatherMap API with smart response caching.',
-    tech: ['React', 'TypeScript', 'Chart.js', 'Tailwind'],
-    liveUrl: 'https://weather-akash.vercel.app',        // ← replace with real URL
-    githubUrl: 'https://github.com/Akashkr28/weather-dashboard',
-    icon: <CloudRain size={28} />, highlight: 'rose', badge: 'API',
-    // media: { type: 'image', src: '/previews/weather.png' },
-  },
-  {
-    title: 'Expense Tracker (Mobile)',
-    shortDesc: 'Cross-platform React Native app with category breakdown charts, budget alerts, monthly summaries, and offline-first storage.',
-    tech: ['React Native', 'Expo', 'TypeScript'],
-    liveUrl: 'https://expo.dev/@akashkumarsingh/expense-tracker', // ← replace with real URL
-    githubUrl: 'https://github.com/Akashkr28/expense-tracker',
-    icon: <Smartphone size={28} />, highlight: 'green', badge: 'Mobile',
-    // media: { type: 'image', src: '/previews/expense-tracker.png' },
   },
 ]
 
