@@ -1,16 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import {
-  ExternalLink, Radio, BarChart2, CheckSquare, Layers,
-  ChevronLeft, ChevronRight,
-} from 'lucide-react'
+import { ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react'
 import { GithubIcon } from './BrandIcons'
-import {
-  SiReact, SiTypescript, SiNodedotjs, SiRedis,
-  SiApachekafka, SiLeaflet, SiJavascript,
-  SiNextdotjs, SiPostgresql, SiExpress,
-} from 'react-icons/si'
-import type { IconType } from 'react-icons'
 
 /* ─── Types ─────────────────────────────────────────────── */
 interface ProjectMedia {
@@ -25,34 +16,19 @@ interface Project {
   tech: string[]
   liveUrl: string
   githubUrl: string
-  icon: React.ReactNode
   highlight: 'cyan' | 'green' | 'violet' | 'amber' | 'rose' | 'sky'
   badge: string
   media?: ProjectMedia
 }
 
-/* ─── Tech icon lookup ───────────────────────────────────── */
-const techIcons: Record<string, IconType> = {
-  'React':      SiReact,
-  'TypeScript': SiTypescript,
-  'JavaScript': SiJavascript,
-  'Node.js':    SiNodedotjs,
-  'Redis':      SiRedis,
-  'Kafka':      SiApachekafka,
-  'Leaflet.js': SiLeaflet,
-  'Next.js':    SiNextdotjs,
-  'PostgreSQL': SiPostgresql,
-  'Express':    SiExpress,
-}
-
 /* ─── Colour palette ─────────────────────────────────────── */
 const palette = {
-  cyan:   { rgb: '34,211,238',  text: 'text-cyan-400',   bg: 'bg-cyan-400/10',   hex: '#22d3ee' },
-  green:  { rgb: '74,222,128',  text: 'text-green-400',  bg: 'bg-green-400/10',  hex: '#4ade80' },
-  violet: { rgb: '167,139,250', text: 'text-violet-400', bg: 'bg-violet-400/10', hex: '#a78bfa' },
-  amber:  { rgb: '251,191,36',  text: 'text-amber-400',  bg: 'bg-amber-400/10',  hex: '#fbbf24' },
-  rose:   { rgb: '251,113,133', text: 'text-rose-400',   bg: 'bg-rose-400/10',   hex: '#fb7185' },
-  sky:    { rgb: '56,189,248',  text: 'text-sky-400',    bg: 'bg-sky-400/10',    hex: '#38bdf8' },
+  cyan:   { rgb: '34,211,238',  hex: '#22d3ee' },
+  green:  { rgb: '74,222,128',  hex: '#4ade80' },
+  violet: { rgb: '167,139,250', hex: '#a78bfa' },
+  amber:  { rgb: '251,191,36',  hex: '#fbbf24' },
+  rose:   { rgb: '251,113,133', hex: '#fb7185' },
+  sky:    { rgb: '56,189,248',  hex: '#38bdf8'  },
 }
 
 /* ─── Project data ───────────────────────────────────────── */
@@ -63,7 +39,7 @@ const projects: Project[] = [
     tech: ['React', 'Kafka', 'Leaflet.js', 'Node.js'],
     liveUrl: 'https://your-tracker-url.com',
     githubUrl: 'https://github.com/Akashkr28/location-tracker',
-    icon: <Radio size={28} />, highlight: 'cyan', badge: 'Real-time',
+    highlight: 'cyan', badge: 'Real-time',
   },
   {
     title: 'Pulseboard',
@@ -71,7 +47,7 @@ const projects: Project[] = [
     tech: ['React', 'TypeScript', 'Socket.io', 'Node.js', 'MongoDB'],
     liveUrl: 'https://pulse-board-live-poll-for-feedback.vercel.app',
     githubUrl: 'https://github.com/Akashkr28/pulseboard',
-    icon: <BarChart2 size={28} />, highlight: 'green', badge: 'Live',
+    highlight: 'green', badge: 'Live',
     media: { type: 'video', src: '/previews/pulseboard.mp4' },
   },
   {
@@ -80,68 +56,27 @@ const projects: Project[] = [
     tech: ['React', 'Redis', 'Node.js', 'JavaScript'],
     liveUrl: 'https://million-checkboxes-xtg8.onrender.com',
     githubUrl: 'https://github.com/Akashkr28/1m-checkboxes',
-    icon: <CheckSquare size={28} />, highlight: 'violet', badge: 'Viral',
+    highlight: 'violet', badge: 'Viral',
     media: { type: 'video', src: '/previews/1m-checkboxes.mp4' },
   },
   {
     title: 'ChaiForm — Form Builder SaaS',
     shortDesc: 'Production-grade Typeform-inspired form builder on a Turborepo monorepo. Dynamic field schemas, Google OAuth, response analytics with CSV export, email notifications, and honeypot spam protection.',
-    tech: ['Next.js', 'TypeScript', 'Express', 'PostgreSQL', 'Turborepo', 'tRPC', 'Drizzle ORM', 'Zod'],
+    tech: ['Next.js', 'TypeScript', 'Express', 'PostgreSQL', 'Turborepo'],
     liveUrl: 'https://chaiforms-web-hjco.onrender.com',
     githubUrl: 'https://github.com/Akashkr28/ChaiForm_Form_Builder_SaaS',
-    icon: <Layers size={28} />, highlight: 'amber', badge: 'SaaS',
+    highlight: 'amber', badge: 'SaaS',
     media: { type: 'youtube', videoId: 'vEyni4YnQAw' },
   },
 ]
 
-const AUTO_ADVANCE_MS = 5000
+const AUTO_ADVANCE_MS = 6000
 
-/* ─── Shared media renderer (used in screen + reflection) ── */
-function ScreenMedia({ media, project, tabIndex }: {
-  media?: ProjectMedia
-  project: Project
-  tabIndex?: number
-}) {
-  const cls = palette[project.highlight]
-
-  if (media?.type === 'video') return (
-    <video
-      src={media.src}
-      className="w-full h-full object-cover"
-      autoPlay muted loop playsInline preload="metadata"
-    />
-  )
-
-  if (media?.type === 'youtube') return (
-    <iframe
-      tabIndex={tabIndex ?? 0}
-      src={`https://www.youtube.com/embed/${media.videoId}?autoplay=1&mute=1&loop=1&playlist=${media.videoId}&controls=0&modestbranding=1&rel=0&playsinline=1&disablekb=1`}
-      className="absolute inset-0 w-full h-full pointer-events-none"
-      allow="autoplay; encrypted-media"
-      frameBorder="0"
-      title={project.title}
-    />
-  )
-
-  /* Placeholder */
-  return (
-    <div
-      className="absolute inset-0 flex items-center justify-center"
-      style={{ background: `linear-gradient(135deg, rgba(${cls.rgb},0.12) 0%, #020617 60%, rgba(${cls.rgb},0.05) 100%)` }}
-    >
-      <div className="absolute inset-0 grid-bg opacity-25 pointer-events-none" />
-      <div className="absolute w-52 h-52 rounded-full blur-3xl pointer-events-none"
-        style={{ background: `rgba(${cls.rgb},0.16)` }} />
-      <div className={`relative z-10 p-6 rounded-2xl ${cls.bg} ${cls.text}`}>{project.icon}</div>
-    </div>
-  )
-}
-
-/* ─── Main export ────────────────────────────────────────── */
+/* ─── Main component ─────────────────────────────────────── */
 export default function Projects() {
   const [idx, setIdx]       = useState(0)
   const [paused, setPaused] = useState(false)
-  const [prog, setProg]     = useState(0)   // 0–1 progress for the auto-advance bar
+  const [prog, setProg]     = useState(0)
 
   const project = projects[idx]
   const cls     = palette[project.highlight]
@@ -151,12 +86,11 @@ export default function Projects() {
     setProg(0)
   }, [])
 
-  /* Auto-advance + progress bar */
+  /* Auto-advance + rAF progress bar */
   useEffect(() => {
     if (paused) return
-    const start   = performance.now()
+    const start = performance.now()
     let rafId: number
-
     const tick = (now: number) => {
       const elapsed = now - start
       setProg(Math.min(elapsed / AUTO_ADVANCE_MS, 1))
@@ -172,222 +106,241 @@ export default function Projects() {
   }, [idx, paused])
 
   return (
-    <section id="projects" className="py-28 px-6 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-950/5 to-transparent pointer-events-none" />
+    <section id="projects" className="py-24 relative">
 
-      {/* ── Header ── */}
-      <div className="mb-14 text-center">
+      {/* ── Section header ── */}
+      <div className="text-center mb-10 px-6">
         <p className="font-mono text-cyan-400 text-xs tracking-[0.3em] uppercase mb-3">02. Projects</p>
         <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight">Things I've Built</h2>
         <p className="text-slate-500 mt-2 text-sm">{projects.length} projects · all live and deployed</p>
       </div>
 
-      {/* ── 3-D monitor wrapper ── */}
-      <div className="max-w-3xl mx-auto" style={{ perspective: '1600px' }}>
+      {/* ══ Cinematic showcase ══ */}
+      <div
+        className="relative overflow-hidden"
+        style={{ minHeight: '85vh' }}
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+      >
 
-        {/* ══ SCREEN ══ */}
-        <div
-          style={{
-            transform: 'rotateX(4deg)',
-            transformStyle: 'preserve-3d',
-          }}
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
-        >
-          {/* Auto-advance progress bar — sits above the screen */}
-          <div className="h-[2px] rounded-t-full overflow-hidden bg-slate-800/60 mb-0">
-            <div
-              className="h-full rounded-full transition-none"
-              style={{
-                width: `${prog * 100}%`,
-                background: `linear-gradient(to right, ${cls.hex}, #a78bfa)`,
-                transition: paused ? 'none' : undefined,
-              }}
-            />
-          </div>
-
-          {/* Screen body */}
-          <div
-            className="rounded-xl overflow-hidden border border-slate-700/30 bg-slate-950 shadow-2xl"
-            style={{
-              boxShadow: `0 0 0 1px rgba(255,255,255,0.04),
-                          0 50px 100px rgba(0,0,0,0.75),
-                          0 0 80px rgba(${cls.rgb},0.07)`,
-            }}
+        {/* ── Background ── */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={`bg-${project.title}`}
+            className="absolute inset-0"
+            initial={{ opacity: 0, scale: 1.05 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.9, ease: 'easeOut' }}
           >
-            {/* ── Video / media area ── */}
-            <div className="relative aspect-video overflow-hidden bg-slate-950">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={project.title}
-                  className="absolute inset-0"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.5, ease: 'easeInOut' }}
-                >
-                  <ScreenMedia media={project.media} project={project} />
-                </motion.div>
-              </AnimatePresence>
-
-              {/* Screen glare — sells the 3D glass surface */}
+            {project.media?.type === 'video' && (
+              <video
+                src={project.media.src}
+                autoPlay muted loop playsInline
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            )}
+            {project.media?.type === 'youtube' && (
+              <img
+                src={`https://img.youtube.com/vi/${project.media.videoId}/maxresdefault.jpg`}
+                alt={project.title}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            )}
+            {!project.media && (
               <div
-                className="absolute inset-0 pointer-events-none"
+                className="absolute inset-0"
                 style={{
-                  background: 'linear-gradient(130deg, rgba(255,255,255,0.05) 0%, transparent 45%)',
+                  background: `radial-gradient(ellipse at 72% 28%, rgba(${cls.rgb},0.45) 0%, #020617 62%)`,
                 }}
               />
-              {/* Inner bezel shadow */}
-              <div className="absolute inset-0 pointer-events-none"
-                style={{ boxShadow: 'inset 0 0 40px rgba(0,0,0,0.55)' }} />
-            </div>
+            )}
 
-            {/* ── Project info (inside the screen, below video) ── */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={`info-${project.title}`}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.4, ease: 'easeOut' }}
-                className="px-7 py-5 border-t border-slate-800/60"
+            {/* Left-heavy dark overlay — text lives in the dark left zone */}
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  'linear-gradient(105deg, rgba(2,6,23,0.97) 0%, rgba(2,6,23,0.88) 30%, rgba(2,6,23,0.55) 60%, rgba(2,6,23,0.18) 100%)',
+              }}
+            />
+            {/* Bottom vignette */}
+            <div
+              className="absolute inset-0"
+              style={{ background: 'linear-gradient(to top, rgba(2,6,23,0.92) 0%, transparent 42%)' }}
+            />
+          </motion.div>
+        </AnimatePresence>
+
+        {/* ── Top progress bar ── */}
+        <div className="absolute top-0 left-0 right-0 h-[2px] z-20 bg-white/8">
+          <div
+            className="h-full"
+            style={{ width: `${prog * 100}%`, backgroundColor: cls.hex, transition: 'none' }}
+          />
+        </div>
+
+        {/* ── Main content ── */}
+        <div className="relative z-10 min-h-[85vh] flex flex-col justify-between px-8 md:px-16 lg:px-24 py-10">
+
+          {/* Top row: counter + badge */}
+          <div className="flex items-center justify-between">
+            <span className="font-mono text-white/20 text-[10px] tracking-[0.5em] uppercase">
+              {String(idx + 1).padStart(2, '0')}&nbsp;/&nbsp;{String(projects.length).padStart(2, '0')}
+            </span>
+            <span
+              className="text-[10px] font-mono px-3 py-1 rounded-full border tracking-[0.25em] uppercase"
+              style={{ color: cls.hex, borderColor: `${cls.hex}45`, background: `${cls.hex}14` }}
+            >
+              {project.badge}
+            </span>
+          </div>
+
+          {/* Center: editorial content */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={project.title}
+              initial={{ opacity: 0, y: 55 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -25 }}
+              transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+              className="max-w-[660px]"
+            >
+              {/* Small eyebrow label */}
+              <p className="font-mono text-white/28 text-[11px] tracking-[0.45em] uppercase mb-2">
+                Featured Project
+              </p>
+
+              {/* ── Giant watermark number (RTFKT style) ── */}
+              <p
+                className="font-black leading-none tracking-tighter select-none"
+                style={{
+                  fontSize: 'clamp(90px, 19vw, 230px)',
+                  color: 'rgba(255,255,255,0.055)',
+                  WebkitTextStroke: '1px rgba(255,255,255,0.07)',
+                  lineHeight: 0.88,
+                }}
               >
-                {/* Title row */}
-                <div className="flex items-center justify-between gap-4 mb-3">
-                  <h3 className="text-white font-bold text-lg leading-tight tracking-tight">
-                    {project.title}
-                  </h3>
-                  <span className={`shrink-0 text-[10px] font-mono px-2.5 py-0.5 rounded-full border border-current/20 ${cls.text}`}>
-                    {project.badge}
-                  </span>
-                </div>
+                {String(idx + 1).padStart(2, '0')}.
+              </p>
 
-                {/* Tech icons */}
-                <div className="flex flex-wrap items-center gap-2 mb-3">
-                  {project.tech.map(t => {
-                    const Icon = techIcons[t]
-                    return Icon ? (
-                      <div key={t} title={t}
-                        className="p-1.5 rounded-lg bg-slate-800/80 border border-slate-700/50 hover:border-slate-600 transition-all hover:scale-110">
-                        <Icon size={13} color={cls.hex} style={{ opacity: 0.8 }} />
-                      </div>
-                    ) : (
-                      <span key={t}
-                        className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-800/80 border border-slate-700/50 text-slate-400">
-                        {t}
-                      </span>
-                    )
-                  })}
-                </div>
+              {/* Project title — overlaps the watermark number */}
+              <h3
+                className="font-black text-white tracking-tight leading-[1.05] mb-6"
+                style={{
+                  fontSize: 'clamp(26px, 4.8vw, 60px)',
+                  marginTop: 'clamp(-24px, -4vw, -56px)',
+                }}
+              >
+                {project.title}
+              </h3>
 
-                {/* Description */}
-                <p className="text-slate-400 text-sm leading-relaxed mb-4 line-clamp-2">
-                  {project.shortDesc}
-                </p>
+              {/* ── Split pill — [BADGE | tech · tech · tech] ── */}
+              <div className="inline-flex items-center rounded-full overflow-hidden mb-5 border border-white/10">
+                <span
+                  className="px-4 py-1.5 text-[11px] font-mono font-bold tracking-[0.2em] uppercase"
+                  style={{ backgroundColor: cls.hex, color: '#020617' }}
+                >
+                  {project.badge}
+                </span>
+                <span className="px-4 py-1.5 text-[11px] font-mono text-white/45 bg-white/[0.05] tracking-wide">
+                  {project.tech.slice(0, 4).join(' · ')}
+                </span>
+              </div>
 
-                {/* Links */}
-                <div className="flex items-center gap-5">
-                  <a href={project.githubUrl} target="_blank" rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-white transition-colors">
-                    <GithubIcon size={14} /> Source
-                  </a>
-                  <a href={project.liveUrl} target="_blank" rel="noopener noreferrer"
-                    className={`flex items-center gap-1.5 text-xs ${cls.text} opacity-80 hover:opacity-100 transition-opacity`}>
-                    <ExternalLink size={13} /> Live Demo
-                  </a>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </div>
+              {/* Description */}
+              <p className="text-white/45 text-sm md:text-[15px] leading-relaxed mb-9 max-w-[460px]">
+                {project.shortDesc}
+              </p>
 
-        {/* ══ STAND ══ */}
-        <div className="relative flex justify-center h-14 overflow-visible">
-          {/* Left leg */}
-          <div
-            className="absolute bottom-0 w-px h-14 origin-bottom"
-            style={{
-              left: 'calc(50% - 56px)',
-              background: 'linear-gradient(to bottom, rgba(100,116,139,0.6), rgba(51,65,85,0.2))',
-              transform: 'rotate(-14deg)',
-            }}
-          />
-          {/* Right leg */}
-          <div
-            className="absolute bottom-0 w-px h-14 origin-bottom"
-            style={{
-              right: 'calc(50% - 56px)',
-              background: 'linear-gradient(to bottom, rgba(100,116,139,0.6), rgba(51,65,85,0.2))',
-              transform: 'rotate(14deg)',
-            }}
-          />
-          {/* Base bar */}
-          <div
-            className="absolute bottom-0 left-1/2 -translate-x-1/2 h-px w-36 rounded-full"
-            style={{ background: 'linear-gradient(to right, transparent, rgba(100,116,139,0.45), transparent)' }}
-          />
-        </div>
+              {/* CTA links */}
+              <div className="flex items-center gap-7">
+                <a
+                  href={project.liveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-7 py-2.5 text-[11px] font-mono font-bold tracking-[0.2em] uppercase rounded-full hover:opacity-80 transition-opacity"
+                  style={{ backgroundColor: cls.hex, color: '#020617' }}
+                >
+                  <ExternalLink size={12} /> Live Demo
+                </a>
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-[11px] font-mono text-white/35 hover:text-white transition-colors tracking-[0.2em] uppercase"
+                >
+                  <GithubIcon size={14} /> Source
+                </a>
+              </div>
+            </motion.div>
+          </AnimatePresence>
 
-        {/* ══ REFLECTION ══ */}
-        <div className="relative overflow-hidden h-28 -mt-px">
-          {/* Flipped, blurred, faded duplicate of the media only */}
-          <div
-            className="rounded-xl overflow-hidden border border-slate-700/10"
-            style={{
-              transform: 'scaleY(-1) scaleX(0.97)',
-              transformOrigin: 'top center',
-              filter: 'blur(5px)',
-              opacity: 0.13,
-            }}
-          >
-            <div className="relative aspect-video overflow-hidden bg-slate-950">
-              <ScreenMedia media={project.media} project={project} tabIndex={-1} />
+          {/* ── Bottom bar ── */}
+          <div className="flex items-end justify-between border-t border-white/[0.06] pt-5">
+
+            {/* Left: project name + full tech stack */}
+            <div>
+              <p className="font-mono text-white/50 text-[11px] tracking-[0.35em] uppercase">
+                {project.title}
+              </p>
+              <p className="font-mono text-white/18 text-[10px] tracking-wider uppercase mt-1">
+                {project.tech.join(' · ')}
+              </p>
+            </div>
+
+            {/* Right: navigation */}
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => goTo(idx - 1)}
+                aria-label="Previous project"
+                className="p-2 border border-white/10 rounded-full text-white/30 hover:text-white hover:border-white/25 transition-all duration-200"
+              >
+                <ChevronLeft size={15} />
+              </button>
+
+              {/* Dot indicators */}
+              <div className="flex items-center gap-1.5">
+                {projects.map((p, i) => (
+                  <button
+                    key={p.title}
+                    onClick={() => goTo(i)}
+                    aria-label={p.title}
+                    className={`h-[3px] rounded-full transition-all duration-300 ${
+                      i === idx ? 'w-9' : 'w-2.5 bg-white/20 hover:bg-white/35'
+                    }`}
+                    style={i === idx ? { backgroundColor: cls.hex } : {}}
+                  />
+                ))}
+              </div>
+
+              <button
+                onClick={() => goTo(idx + 1)}
+                aria-label="Next project"
+                className="p-2 border border-white/10 rounded-full text-white/30 hover:text-white hover:border-white/25 transition-all duration-200"
+              >
+                <ChevronRight size={15} />
+              </button>
             </div>
           </div>
-
-          {/* Gradient fade — dark floor swallows the reflection */}
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{ background: 'linear-gradient(to bottom, rgba(2,6,23,0.35) 0%, #020617 58%)' }}
-          />
         </div>
-      </div>
 
-      {/* ── Navigation ── */}
-      <div className="flex items-center justify-center gap-5 mt-6">
+        {/* ── Side arrows (large screens) ── */}
         <button
           onClick={() => goTo(idx - 1)}
-          className="p-2 text-slate-600 hover:text-cyan-400 transition-colors"
           aria-label="Previous project"
+          className="hidden lg:flex absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 items-center justify-center border border-white/10 rounded-full text-white/25 bg-black/20 hover:text-white hover:bg-black/40 hover:border-white/20 transition-all duration-200"
         >
           <ChevronLeft size={20} />
         </button>
-
-        {/* Dot indicators */}
-        <div className="flex items-center gap-2">
-          {projects.map((p, i) => (
-            <button
-              key={p.title}
-              onClick={() => goTo(i)}
-              aria-label={p.title}
-              className={`h-1.5 rounded-full transition-all duration-300 ${i === idx ? 'w-7' : 'w-1.5 bg-slate-700 hover:bg-slate-500'}`}
-              style={i === idx ? { backgroundColor: palette[p.highlight].hex } : {}}
-            />
-          ))}
-        </div>
-
         <button
           onClick={() => goTo(idx + 1)}
-          className="p-2 text-slate-600 hover:text-cyan-400 transition-colors"
           aria-label="Next project"
+          className="hidden lg:flex absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 items-center justify-center border border-white/10 rounded-full text-white/25 bg-black/20 hover:text-white hover:bg-black/40 hover:border-white/20 transition-all duration-200"
         >
           <ChevronRight size={20} />
         </button>
       </div>
-
-      <p className="text-center font-mono text-xs text-slate-700 mt-3 tracking-widest uppercase">
-        hover to pause · arrows or dots to navigate
-      </p>
     </section>
   )
 }
