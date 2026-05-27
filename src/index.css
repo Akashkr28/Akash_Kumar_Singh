@@ -65,3 +65,16 @@ body {
   background-size: 60px 60px;
 }
 
+/* ── Infinite marquee ── */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  animation: marquee 30s linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+

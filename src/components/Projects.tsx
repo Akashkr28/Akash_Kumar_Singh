@@ -1,7 +1,14 @@
-import { useState, useEffect, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react'
+import { useRef } from 'react'
+import {
+  ExternalLink, Radio, BarChart2, CheckSquare, Layers,
+} from 'lucide-react'
 import { GithubIcon } from './BrandIcons'
+import {
+  SiReact, SiTypescript, SiNodedotjs, SiRedis,
+  SiApachekafka, SiLeaflet, SiJavascript,
+  SiNextdotjs, SiPostgresql, SiExpress,
+} from 'react-icons/si'
+import type { IconType } from 'react-icons'
 
 /* ─── Types ─────────────────────────────────────────────── */
 interface ProjectMedia {
@@ -16,19 +23,34 @@ interface Project {
   tech: string[]
   liveUrl: string
   githubUrl: string
+  icon: React.ReactNode
   highlight: 'cyan' | 'green' | 'violet' | 'amber' | 'rose' | 'sky'
   badge: string
   media?: ProjectMedia
 }
 
+/* ─── Tech icon lookup ───────────────────────────────────── */
+const techIcons: Record<string, IconType> = {
+  'React':      SiReact,
+  'TypeScript': SiTypescript,
+  'JavaScript': SiJavascript,
+  'Node.js':    SiNodedotjs,
+  'Redis':      SiRedis,
+  'Kafka':      SiApachekafka,
+  'Leaflet.js': SiLeaflet,
+  'Next.js':    SiNextdotjs,
+  'PostgreSQL': SiPostgresql,
+  'Express':    SiExpress,
+}
+
 /* ─── Colour palette ─────────────────────────────────────── */
 const palette = {
-  cyan:   { rgb: '34,211,238',  hex: '#22d3ee' },
-  green:  { rgb: '74,222,128',  hex: '#4ade80' },
-  violet: { rgb: '167,139,250', hex: '#a78bfa' },
-  amber:  { rgb: '251,191,36',  hex: '#fbbf24' },
-  rose:   { rgb: '251,113,133', hex: '#fb7185' },
-  sky:    { rgb: '56,189,248',  hex: '#38bdf8'  },
+  cyan:   { rgb: '34,211,238',  text: 'text-cyan-400',   bg: 'bg-cyan-400/10',   hex: '#22d3ee' },
+  green:  { rgb: '74,222,128',  text: 'text-green-400',  bg: 'bg-green-400/10',  hex: '#4ade80' },
+  violet: { rgb: '167,139,250', text: 'text-violet-400', bg: 'bg-violet-400/10', hex: '#a78bfa' },
+  amber:  { rgb: '251,191,36',  text: 'text-amber-400',  bg: 'bg-amber-400/10',  hex: '#fbbf24' },
+  rose:   { rgb: '251,113,133', text: 'text-rose-400',   bg: 'bg-rose-400/10',   hex: '#fb7185' },
+  sky:    { rgb: '56,189,248',  text: 'text-sky-400',    bg: 'bg-sky-400/10',    hex: '#38bdf8' },
 }
 
 /* ─── Project data ───────────────────────────────────────── */
@@ -39,7 +61,7 @@ const projects: Project[] = [
     tech: ['React', 'Kafka', 'Leaflet.js', 'Node.js'],
     liveUrl: 'https://your-tracker-url.com',
     githubUrl: 'https://github.com/Akashkr28/location-tracker',
-    highlight: 'cyan', badge: 'Real-time',
+    icon: <Radio size={28} />, highlight: 'cyan', badge: 'Real-time',
   },
   {
     title: 'Pulseboard',
@@ -47,7 +69,7 @@ const projects: Project[] = [
     tech: ['React', 'TypeScript', 'Socket.io', 'Node.js', 'MongoDB'],
     liveUrl: 'https://pulse-board-live-poll-for-feedback.vercel.app',
     githubUrl: 'https://github.com/Akashkr28/pulseboard',
-    highlight: 'green', badge: 'Live',
+    icon: <BarChart2 size={28} />, highlight: 'green', badge: 'Live',
     media: { type: 'video', src: '/previews/pulseboard.mp4' },
   },
   {
@@ -56,291 +78,229 @@ const projects: Project[] = [
     tech: ['React', 'Redis', 'Node.js', 'JavaScript'],
     liveUrl: 'https://million-checkboxes-xtg8.onrender.com',
     githubUrl: 'https://github.com/Akashkr28/1m-checkboxes',
-    highlight: 'violet', badge: 'Viral',
+    icon: <CheckSquare size={28} />, highlight: 'violet', badge: 'Viral',
     media: { type: 'video', src: '/previews/1m-checkboxes.mp4' },
   },
   {
     title: 'ChaiForm — Form Builder SaaS',
     shortDesc: 'Production-grade Typeform-inspired form builder on a Turborepo monorepo. Dynamic field schemas, Google OAuth, response analytics with CSV export, email notifications, and honeypot spam protection.',
-    tech: ['Next.js', 'TypeScript', 'Express', 'PostgreSQL', 'Turborepo'],
+    tech: ['Next.js', 'TypeScript', 'Express', 'PostgreSQL', 'Turborepo', 'tRPC', 'Drizzle ORM', 'Zod'],
     liveUrl: 'https://chaiforms-web-hjco.onrender.com',
     githubUrl: 'https://github.com/Akashkr28/ChaiForm_Form_Builder_SaaS',
-    highlight: 'amber', badge: 'SaaS',
+    icon: <Layers size={28} />, highlight: 'amber', badge: 'SaaS',
     media: { type: 'youtube', videoId: 'vEyni4YnQAw' },
   },
 ]
 
-const AUTO_ADVANCE_MS = 6000
-
-/* ─── Main component ─────────────────────────────────────── */
-export default function Projects() {
-  const [idx, setIdx]       = useState(0)
-  const [paused, setPaused] = useState(false)
-  const [prog, setProg]     = useState(0)
-
-  const project = projects[idx]
-  const cls     = palette[project.highlight]
-
-  const goTo = useCallback((next: number) => {
-    setIdx((next + projects.length) % projects.length)
-    setProg(0)
-  }, [])
-
-  /* Auto-advance + rAF progress bar */
-  useEffect(() => {
-    if (paused) return
-    const start = performance.now()
-    let rafId: number
-    const tick = (now: number) => {
-      const elapsed = now - start
-      setProg(Math.min(elapsed / AUTO_ADVANCE_MS, 1))
-      if (elapsed < AUTO_ADVANCE_MS) {
-        rafId = requestAnimationFrame(tick)
-      } else {
-        setIdx(i => (i + 1) % projects.length)
-        setProg(0)
-      }
-    }
-    rafId = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(rafId)
-  }, [idx, paused])
+/* ─── Browser mockup preview ─────────────────────────────── */
+function MockBrowser({ project }: { project: Project }) {
+  const cls = palette[project.highlight]
+  const { media } = project
 
   return (
-    <section id="projects" className="py-24 relative">
+    <div className="rounded-xl overflow-hidden border border-slate-800 shadow-2xl group/browser">
+      {/* Chrome bar */}
+      <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-950 border-b border-slate-800">
+        <span className="w-2.5 h-2.5 rounded-full bg-red-500/80 shrink-0" />
+        <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/80 shrink-0" />
+        <span className="w-2.5 h-2.5 rounded-full bg-green-500/80 shrink-0" />
+        <div className="flex-1 mx-3">
+          <div className="bg-slate-800/80 rounded px-3 py-0.5 text-[11px] text-slate-500 font-mono truncate">
+            {project.liveUrl}
+          </div>
+        </div>
+        <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border border-current/20 shrink-0 ${cls.text}`}>
+          {project.badge}
+        </span>
+      </div>
 
-      {/* ── Section header ── */}
-      <div className="text-center mb-10 px-6">
+      {/* Preview canvas */}
+      <div className="relative aspect-video overflow-hidden">
+
+        {media?.type === 'image' && (
+          <img
+            src={media.src}
+            alt={`${project.title} preview`}
+            className="w-full h-full object-cover object-top transition-transform duration-700 group-hover/browser:scale-105"
+          />
+        )}
+
+        {media?.type === 'video' && (
+          <video
+            src={media.src}
+            className="w-full h-full object-cover"
+            autoPlay muted loop playsInline preload="metadata"
+          />
+        )}
+
+        {media?.type === 'youtube' && (
+          <iframe
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            src={`https://www.youtube.com/embed/${media.videoId}?autoplay=1&mute=1&loop=1&playlist=${media.videoId}&controls=0&modestbranding=1&rel=0&playsinline=1&disablekb=1`}
+            title="Project demo"
+            allow="autoplay; encrypted-media"
+            frameBorder="0"
+          />
+        )}
+
+        {!media && (
+          <div
+            className="absolute inset-0 flex items-center justify-center"
+            style={{ background: `linear-gradient(135deg, rgba(${cls.rgb},0.10) 0%, #020617 55%, rgba(${cls.rgb},0.04) 100%)` }}
+          >
+            <div className="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
+            <div
+              className="absolute w-44 h-44 rounded-full blur-3xl pointer-events-none"
+              style={{ background: `rgba(${cls.rgb},0.18)` }}
+            />
+            <div className={`relative z-10 p-5 rounded-2xl ${cls.bg} ${cls.text}`}>
+              {project.icon}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+/* ─── Project card  (3-D tilt + glare) ──────────────────── */
+function ProjectCard({ project }: { project: Project }) {
+  const cls     = palette[project.highlight]
+  const cardRef = useRef<HTMLDivElement>(null)
+  const glareRef = useRef<HTMLDivElement>(null)
+
+  const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card  = cardRef.current
+    const glare = glareRef.current
+    if (!card) return
+    const rect  = card.getBoundingClientRect()
+    const x     = e.clientX - rect.left
+    const y     = e.clientY - rect.top
+    const normX = x / rect.width  - 0.5   // –0.5 … 0.5
+    const normY = y / rect.height - 0.5
+    const rotY  =  normX * 18
+    const rotX  = -normY * 12
+    card.style.transform  = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.03,1.03,1.03)`
+    card.style.boxShadow  = `
+      ${-normX * 28}px ${-normY * 18}px 52px rgba(${cls.rgb},0.24),
+      0 28px 64px rgba(0,0,0,0.50)
+    `
+    if (glare) {
+      const gx = (x / rect.width  * 100).toFixed(1)
+      const gy = (y / rect.height * 100).toFixed(1)
+      glare.style.background = `radial-gradient(circle at ${gx}% ${gy}%, rgba(255,255,255,0.14) 0%, transparent 62%)`
+    }
+  }
+
+  const onMouseLeave = () => {
+    const card  = cardRef.current
+    const glare = glareRef.current
+    if (!card) return
+    card.style.transform = ''
+    card.style.boxShadow = ''
+    if (glare) glare.style.background = 'transparent'
+  }
+
+  return (
+    <div
+      ref={cardRef}
+      onMouseMove={onMouseMove}
+      onMouseLeave={onMouseLeave}
+      className="group space-y-4 relative"
+      style={{ transition: 'transform 0.20s ease, box-shadow 0.20s ease' }}
+    >
+      {/* Specular glare — covers the full card */}
+      <div
+        ref={glareRef}
+        className="absolute inset-0 rounded-xl pointer-events-none z-10"
+        style={{ mixBlendMode: 'overlay', transition: 'background 0.08s ease' }}
+      />
+
+      <MockBrowser project={project} />
+
+      {/* Title */}
+      <h3 className={`text-lg font-bold text-white transition-colors duration-200 group-hover:${cls.text}`}>
+        {project.title}
+      </h3>
+
+      {/* Tech icons */}
+      <div className="flex flex-wrap items-center gap-2">
+        {project.tech.map(t => {
+          const Icon = techIcons[t]
+          return Icon ? (
+            <div
+              key={t}
+              title={t}
+              className="p-1.5 rounded-lg bg-slate-800/80 border border-slate-700/50 hover:border-slate-600 transition-all hover:scale-110"
+            >
+              <Icon size={14} color={cls.hex} style={{ opacity: 0.75 }} />
+            </div>
+          ) : (
+            <span key={t} className="text-[10px] font-mono px-2 py-1 rounded-md bg-slate-800/80 border border-slate-700/50 text-slate-400">
+              {t}
+            </span>
+          )
+        })}
+      </div>
+
+      {/* Description */}
+      <p className="text-slate-400 text-sm leading-relaxed">
+        {project.shortDesc}
+      </p>
+
+      {/* Links */}
+      <div className="flex items-center gap-5">
+        <a
+          href={project.githubUrl} target="_blank" rel="noopener noreferrer"
+          className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-white transition-colors"
+        >
+          <GithubIcon size={14} /> Source
+        </a>
+        <a
+          href={project.liveUrl} target="_blank" rel="noopener noreferrer"
+          className={`flex items-center gap-1.5 text-xs ${cls.text} opacity-80 hover:opacity-100 transition-opacity`}
+        >
+          <ExternalLink size={13} /> Live Demo
+        </a>
+      </div>
+    </div>
+  )
+}
+
+/* ─── Main export ────────────────────────────────────────── */
+export default function Projects() {
+  return (
+    <section id="projects" className="py-28 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-950/5 to-transparent pointer-events-none" />
+
+      {/* Header */}
+      <div className="mb-16 text-center px-6">
         <p className="font-mono text-cyan-400 text-xs tracking-[0.3em] uppercase mb-3">02. Projects</p>
         <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight">Things I've Built</h2>
         <p className="text-slate-500 mt-2 text-sm">{projects.length} projects · all live and deployed</p>
       </div>
 
-      {/* ══ Cinematic showcase ══ */}
+      {/* Infinite marquee — fade edges */}
       <div
         className="relative overflow-hidden"
-        style={{ minHeight: '85vh' }}
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
+        style={{
+          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
+          maskImage:        'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
+        }}
       >
-
-        {/* ── Background ── */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={`bg-${project.title}`}
-            className="absolute inset-0"
-            initial={{ opacity: 0, scale: 1.05 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.9, ease: 'easeOut' }}
-          >
-            {project.media?.type === 'video' && (
-              <video
-                src={project.media.src}
-                autoPlay muted loop playsInline
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-            )}
-            {project.media?.type === 'youtube' && (
-              <img
-                src={`https://img.youtube.com/vi/${project.media.videoId}/maxresdefault.jpg`}
-                alt={project.title}
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-            )}
-            {!project.media && (
-              <div
-                className="absolute inset-0"
-                style={{
-                  background: `radial-gradient(ellipse at 72% 28%, rgba(${cls.rgb},0.45) 0%, #020617 62%)`,
-                }}
-              />
-            )}
-
-            {/* Left-heavy dark overlay — text lives in the dark left zone */}
-            <div
-              className="absolute inset-0"
-              style={{
-                background:
-                  'linear-gradient(105deg, rgba(2,6,23,0.97) 0%, rgba(2,6,23,0.88) 30%, rgba(2,6,23,0.55) 60%, rgba(2,6,23,0.18) 100%)',
-              }}
-            />
-            {/* Bottom vignette */}
-            <div
-              className="absolute inset-0"
-              style={{ background: 'linear-gradient(to top, rgba(2,6,23,0.92) 0%, transparent 42%)' }}
-            />
-          </motion.div>
-        </AnimatePresence>
-
-        {/* ── Top progress bar ── */}
-        <div className="absolute top-0 left-0 right-0 h-[2px] z-20 bg-white/8">
-          <div
-            className="h-full"
-            style={{ width: `${prog * 100}%`, backgroundColor: cls.hex, transition: 'none' }}
-          />
-        </div>
-
-        {/* ── Main content ── */}
-        <div className="relative z-10 min-h-[85vh] flex flex-col justify-between px-8 md:px-16 lg:px-24 py-10">
-
-          {/* Top row: counter + badge */}
-          <div className="flex items-center justify-between">
-            <span className="font-mono text-white/20 text-[10px] tracking-[0.5em] uppercase">
-              {String(idx + 1).padStart(2, '0')}&nbsp;/&nbsp;{String(projects.length).padStart(2, '0')}
-            </span>
-            <span
-              className="text-[10px] font-mono px-3 py-1 rounded-full border tracking-[0.25em] uppercase"
-              style={{ color: cls.hex, borderColor: `${cls.hex}45`, background: `${cls.hex}14` }}
-            >
-              {project.badge}
-            </span>
-          </div>
-
-          {/* Center: editorial content */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={project.title}
-              initial={{ opacity: 0, y: 55 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -25 }}
-              transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-              className="max-w-[660px]"
-            >
-              {/* Small eyebrow label */}
-              <p className="font-mono text-white/28 text-[11px] tracking-[0.45em] uppercase mb-2">
-                Featured Project
-              </p>
-
-              {/* ── Giant watermark number (RTFKT style) ── */}
-              <p
-                className="font-black leading-none tracking-tighter select-none"
-                style={{
-                  fontSize: 'clamp(90px, 19vw, 230px)',
-                  color: 'rgba(255,255,255,0.055)',
-                  WebkitTextStroke: '1px rgba(255,255,255,0.07)',
-                  lineHeight: 0.88,
-                }}
-              >
-                {String(idx + 1).padStart(2, '0')}.
-              </p>
-
-              {/* Project title — overlaps the watermark number */}
-              <h3
-                className="font-black text-white tracking-tight leading-[1.05] mb-6"
-                style={{
-                  fontSize: 'clamp(26px, 4.8vw, 60px)',
-                  marginTop: 'clamp(-24px, -4vw, -56px)',
-                }}
-              >
-                {project.title}
-              </h3>
-
-              {/* ── Split pill — [BADGE | tech · tech · tech] ── */}
-              <div className="inline-flex items-center rounded-full overflow-hidden mb-5 border border-white/10">
-                <span
-                  className="px-4 py-1.5 text-[11px] font-mono font-bold tracking-[0.2em] uppercase"
-                  style={{ backgroundColor: cls.hex, color: '#020617' }}
-                >
-                  {project.badge}
-                </span>
-                <span className="px-4 py-1.5 text-[11px] font-mono text-white/45 bg-white/[0.05] tracking-wide">
-                  {project.tech.slice(0, 4).join(' · ')}
-                </span>
-              </div>
-
-              {/* Description */}
-              <p className="text-white/45 text-sm md:text-[15px] leading-relaxed mb-9 max-w-[460px]">
-                {project.shortDesc}
-              </p>
-
-              {/* CTA links */}
-              <div className="flex items-center gap-7">
-                <a
-                  href={project.liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-7 py-2.5 text-[11px] font-mono font-bold tracking-[0.2em] uppercase rounded-full hover:opacity-80 transition-opacity"
-                  style={{ backgroundColor: cls.hex, color: '#020617' }}
-                >
-                  <ExternalLink size={12} /> Live Demo
-                </a>
-                <a
-                  href={project.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-[11px] font-mono text-white/35 hover:text-white transition-colors tracking-[0.2em] uppercase"
-                >
-                  <GithubIcon size={14} /> Source
-                </a>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-
-          {/* ── Bottom bar ── */}
-          <div className="flex items-end justify-between border-t border-white/[0.06] pt-5">
-
-            {/* Left: project name + full tech stack */}
-            <div>
-              <p className="font-mono text-white/50 text-[11px] tracking-[0.35em] uppercase">
-                {project.title}
-              </p>
-              <p className="font-mono text-white/18 text-[10px] tracking-wider uppercase mt-1">
-                {project.tech.join(' · ')}
-              </p>
+        {/* Doubled array → seamless loop */}
+        <div className="marquee-track flex gap-8 w-max px-8">
+          {[...projects, ...projects].map((project, i) => (
+            <div key={`${project.title}-${i}`} className="w-[420px] shrink-0">
+              <ProjectCard project={project} />
             </div>
-
-            {/* Right: navigation */}
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => goTo(idx - 1)}
-                aria-label="Previous project"
-                className="p-2 border border-white/10 rounded-full text-white/30 hover:text-white hover:border-white/25 transition-all duration-200"
-              >
-                <ChevronLeft size={15} />
-              </button>
-
-              {/* Dot indicators */}
-              <div className="flex items-center gap-1.5">
-                {projects.map((p, i) => (
-                  <button
-                    key={p.title}
-                    onClick={() => goTo(i)}
-                    aria-label={p.title}
-                    className={`h-[3px] rounded-full transition-all duration-300 ${
-                      i === idx ? 'w-9' : 'w-2.5 bg-white/20 hover:bg-white/35'
-                    }`}
-                    style={i === idx ? { backgroundColor: cls.hex } : {}}
-                  />
-                ))}
-              </div>
-
-              <button
-                onClick={() => goTo(idx + 1)}
-                aria-label="Next project"
-                className="p-2 border border-white/10 rounded-full text-white/30 hover:text-white hover:border-white/25 transition-all duration-200"
-              >
-                <ChevronRight size={15} />
-              </button>
-            </div>
-          </div>
+          ))}
         </div>
-
-        {/* ── Side arrows (large screens) ── */}
-        <button
-          onClick={() => goTo(idx - 1)}
-          aria-label="Previous project"
-          className="hidden lg:flex absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 items-center justify-center border border-white/10 rounded-full text-white/25 bg-black/20 hover:text-white hover:bg-black/40 hover:border-white/20 transition-all duration-200"
-        >
-          <ChevronLeft size={20} />
-        </button>
-        <button
-          onClick={() => goTo(idx + 1)}
-          aria-label="Next project"
-          className="hidden lg:flex absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 items-center justify-center border border-white/10 rounded-full text-white/25 bg-black/20 hover:text-white hover:bg-black/40 hover:border-white/20 transition-all duration-200"
-        >
-          <ChevronRight size={20} />
-        </button>
       </div>
+
+      <p className="text-center font-mono text-xs text-slate-700 mt-10 tracking-widest uppercase">
+        hover to pause · click to explore
+      </p>
     </section>
   )
 }
