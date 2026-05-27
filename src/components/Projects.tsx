@@ -3,13 +3,14 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import {
   ExternalLink, Radio, BarChart2, CheckSquare,
-  MessageSquare, CloudRain, BrainCircuit, Smartphone,
+  MessageSquare, CloudRain, Layers, Smartphone,
 } from 'lucide-react'
 import { GithubIcon } from './BrandIcons'
 import {
   SiReact, SiTypescript, SiNodedotjs, SiMongodb, SiRedis,
   SiApachekafka, SiSocketdotio, SiOpenai, SiTailwindcss,
   SiVite, SiExpo, SiLeaflet, SiChartdotjs, SiJavascript,
+  SiNextdotjs, SiPostgresql, SiExpress,
 } from 'react-icons/si'
 import type { IconType } from 'react-icons'
 
@@ -17,10 +18,12 @@ gsap.registerPlugin(ScrollTrigger)
 
 /* ─── Types ─────────────────────────────────────────────── */
 interface ProjectMedia {
-  /** 'image' for screenshots (.png/.jpg/.webp) or 'video' for demos (.mp4/.webm) */
-  type: 'image' | 'video'
-  /** Path relative to /public  e.g. '/previews/pulseboard.mp4' */
-  src: string
+  /** 'image' = screenshot, 'video' = local mp4, 'youtube' = muted autoplay embed */
+  type: 'image' | 'video' | 'youtube'
+  /** Path relative to /public — used for image / video types */
+  src?: string
+  /** YouTube video ID — used for youtube type */
+  videoId?: string
 }
 
 interface Project {
@@ -54,6 +57,9 @@ const techIcons: Record<string, IconType> = {
   'Expo':         SiExpo,
   'Leaflet.js':   SiLeaflet,
   'Chart.js':     SiChartdotjs,
+  'Next.js':      SiNextdotjs,
+  'PostgreSQL':   SiPostgresql,
+  'Express':      SiExpress,
 }
 
 /* ─── Colour palette ─────────────────────────────────────── */
@@ -96,13 +102,13 @@ const projects: Project[] = [
     media: { type: 'video', src: '/previews/1m-checkboxes.mp4' },
   },
   {
-    title: 'AI Chat Assistant',
-    shortDesc: 'Conversational AI with multi-turn dialogue, code highlighting, markdown, and local conversation history — powered by OpenAI.',
-    tech: ['React', 'TypeScript', 'OpenAI API', 'Tailwind', 'Vite'],
-    liveUrl: 'https://ai-chat-akash.vercel.app',        // ← replace with real URL
-    githubUrl: 'https://github.com/Akashkr28/ai-chat',
-    icon: <BrainCircuit size={28} />, highlight: 'amber', badge: 'AI',
-    // media: { type: 'image', src: '/previews/ai-chat.png' },
+    title: 'ChaiForm — Form Builder SaaS',
+    shortDesc: 'Production-grade Typeform-inspired form builder on a Turborepo monorepo. Dynamic field schemas, Google OAuth, response analytics with CSV export, email notifications, and honeypot spam protection.',
+    tech: ['Next.js', 'TypeScript', 'Express', 'PostgreSQL', 'Turborepo', 'tRPC', 'Drizzle ORM', 'Zod'],
+    liveUrl: 'https://chaiforms-web-hjco.onrender.com',
+    githubUrl: 'https://github.com/Akashkr28/ChaiForm_Form_Builder_SaaS',
+    icon: <Layers size={28} />, highlight: 'amber', badge: 'SaaS',
+    media: { type: 'youtube', videoId: 'vEyni4YnQAw' },
   },
   {
     title: 'Real-time Chat App',
@@ -167,7 +173,7 @@ function MockBrowser({ project }: { project: Project }) {
           />
         )}
 
-        {/* ── Case 2: Demo video (auto-plays silently on hover) ── */}
+        {/* ── Case 2: Demo video (auto-plays silently) ── */}
         {media?.type === 'video' && (
           <video
             src={media.src}
@@ -180,7 +186,18 @@ function MockBrowser({ project }: { project: Project }) {
           />
         )}
 
-        {/* ── Case 3: Placeholder (no media provided) ── */}
+        {/* ── Case 3: YouTube embed — muted autoplay loop, no controls ── */}
+        {media?.type === 'youtube' && (
+          <iframe
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            src={`https://www.youtube.com/embed/${media.videoId}?autoplay=1&mute=1&loop=1&playlist=${media.videoId}&controls=0&modestbranding=1&rel=0&playsinline=1&disablekb=1`}
+            title="Project demo"
+            allow="autoplay; encrypted-media"
+            frameBorder="0"
+          />
+        )}
+
+        {/* ── Case 4: Placeholder (no media provided) ── */}
         {!media && (
           <div
             className="absolute inset-0 flex items-center justify-center"
