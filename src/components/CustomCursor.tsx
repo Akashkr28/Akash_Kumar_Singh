@@ -6,7 +6,6 @@ export default function CustomCursor() {
   const ringRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    /* Touch devices — keep the native cursor */
     if (typeof window === 'undefined') return
     if (window.matchMedia('(pointer: coarse)').matches) return
 
@@ -32,24 +31,23 @@ export default function CustomCursor() {
     }
 
     const expand = () => {
-      ring.style.width  = '48px'
-      ring.style.height = '48px'
-      ring.style.borderColor  = '#22d3ee'
-      ring.style.background   = 'rgba(34,211,238,0.08)'
-      ring.style.marginLeft   = '-4px'
-      ring.style.marginTop    = '-4px'
+      ring.style.width       = '48px'
+      ring.style.height      = '48px'
+      ring.style.borderColor = '#6366f1'
+      ring.style.background  = 'rgba(99,102,241,0.08)'
+      ring.style.marginLeft  = '-4px'
+      ring.style.marginTop   = '-4px'
     }
 
     const collapse = () => {
-      ring.style.width  = '40px'
-      ring.style.height = '40px'
-      ring.style.borderColor = 'rgba(255,255,255,0.22)'
+      ring.style.width       = '40px'
+      ring.style.height      = '40px'
+      ring.style.borderColor = 'rgba(15,23,42,0.22)'
       ring.style.background  = 'transparent'
       ring.style.marginLeft  = '0px'
       ring.style.marginTop   = '0px'
     }
 
-    /* Attach hover listeners to all interactive elements */
     const attach = () => {
       document.querySelectorAll('a, button, [role="button"], [data-cursor]').forEach(el => {
         el.addEventListener('mouseenter', expand)
@@ -76,14 +74,15 @@ export default function CustomCursor() {
       {/* Dot */}
       <div
         ref={dotRef}
-        className="fixed top-0 left-0 w-2 h-2 rounded-full bg-cyan-400 pointer-events-none z-[9998] mix-blend-difference"
+        className="fixed top-0 left-0 w-2 h-2 rounded-full bg-indigo-500 pointer-events-none z-[9998]"
         style={{ transition: 'none', willChange: 'transform' }}
       />
       {/* Ring */}
       <div
         ref={ringRef}
-        className="fixed top-0 left-0 w-10 h-10 rounded-full border border-white/22 pointer-events-none z-[9997]"
+        className="fixed top-0 left-0 w-10 h-10 rounded-full pointer-events-none z-[9997]"
         style={{
+          border: '1.5px solid rgba(15,23,42,0.22)',
           transition: 'width 0.2s ease, height 0.2s ease, border-color 0.2s ease, background 0.2s ease',
           willChange: 'transform',
         }}

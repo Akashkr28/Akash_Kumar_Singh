@@ -1,8 +1,6 @@
 'use client'
 import { useRef } from 'react'
-import {
-  ExternalLink, Radio, BarChart2, CheckSquare, Layers,
-} from 'lucide-react'
+import { ExternalLink, Radio, BarChart2, CheckSquare, Layers } from 'lucide-react'
 import { GithubIcon } from './BrandIcons'
 import {
   SiReact, SiTypescript, SiNodedotjs, SiRedis,
@@ -11,7 +9,7 @@ import {
 } from 'react-icons/si'
 import type { IconType } from 'react-icons'
 
-/* ─── Types ─────────────────────────────────────────────── */
+/* ─── Types ─────────────────────────────────────── */
 interface ProjectMedia {
   type: 'image' | 'video' | 'youtube'
   src?: string
@@ -25,12 +23,12 @@ interface Project {
   liveUrl: string
   githubUrl: string
   icon: React.ReactNode
-  highlight: 'cyan' | 'green' | 'violet' | 'amber' | 'rose' | 'sky'
+  highlight: 'indigo' | 'sky' | 'violet' | 'emerald' | 'rose' | 'amber'
   badge: string
   media?: ProjectMedia
 }
 
-/* ─── Tech icon lookup ───────────────────────────────────── */
+/* ─── Tech icon map ──────────────────────────────── */
 const techIcons: Record<string, IconType> = {
   'React':      SiReact,
   'TypeScript': SiTypescript,
@@ -44,17 +42,17 @@ const techIcons: Record<string, IconType> = {
   'Express':    SiExpress,
 }
 
-/* ─── Colour palette ─────────────────────────────────────── */
+/* ─── Palette ────────────────────────────────────── */
 const palette = {
-  cyan:   { rgb: '34,211,238',  text: 'text-cyan-400',   bg: 'bg-cyan-400/10',   hex: '#22d3ee' },
-  green:  { rgb: '74,222,128',  text: 'text-green-400',  bg: 'bg-green-400/10',  hex: '#4ade80' },
-  violet: { rgb: '167,139,250', text: 'text-violet-400', bg: 'bg-violet-400/10', hex: '#a78bfa' },
-  amber:  { rgb: '251,191,36',  text: 'text-amber-400',  bg: 'bg-amber-400/10',  hex: '#fbbf24' },
-  rose:   { rgb: '251,113,133', text: 'text-rose-400',   bg: 'bg-rose-400/10',   hex: '#fb7185' },
-  sky:    { rgb: '56,189,248',  text: 'text-sky-400',    bg: 'bg-sky-400/10',    hex: '#38bdf8' },
+  indigo:  { rgb: '99,102,241',   text: 'text-indigo-600',  bg: 'bg-indigo-50',   hex: '#6366f1' },
+  sky:     { rgb: '14,165,233',   text: 'text-sky-600',     bg: 'bg-sky-50',      hex: '#0ea5e9' },
+  violet:  { rgb: '139,92,246',   text: 'text-violet-600',  bg: 'bg-violet-50',   hex: '#8b5cf6' },
+  emerald: { rgb: '16,185,129',   text: 'text-emerald-600', bg: 'bg-emerald-50',  hex: '#10b981' },
+  rose:    { rgb: '244,63,94',    text: 'text-rose-600',    bg: 'bg-rose-50',     hex: '#f43f5e' },
+  amber:   { rgb: '245,158,11',   text: 'text-amber-600',   bg: 'bg-amber-50',    hex: '#f59e0b' },
 }
 
-/* ─── Project data ───────────────────────────────────────── */
+/* ─── Project data ───────────────────────────────── */
 const projects: Project[] = [
   {
     title: 'Live Location Tracker',
@@ -62,7 +60,7 @@ const projects: Project[] = [
     tech: ['React', 'Kafka', 'Leaflet.js', 'Node.js'],
     liveUrl: 'https://your-tracker-url.com',
     githubUrl: 'https://github.com/Akashkr28/location-tracker',
-    icon: <Radio size={28} />, highlight: 'cyan', badge: 'Real-time',
+    icon: <Radio size={28} />, highlight: 'indigo', badge: 'Real-time',
   },
   {
     title: 'Pulseboard',
@@ -70,7 +68,7 @@ const projects: Project[] = [
     tech: ['React', 'TypeScript', 'Socket.io', 'Node.js', 'MongoDB'],
     liveUrl: 'https://pulse-board-live-poll-for-feedback.vercel.app',
     githubUrl: 'https://github.com/Akashkr28/pulseboard',
-    icon: <BarChart2 size={28} />, highlight: 'green', badge: 'Live',
+    icon: <BarChart2 size={28} />, highlight: 'sky', badge: 'Live',
     media: { type: 'video', src: '/previews/pulseboard.mp4' },
   },
   {
@@ -93,31 +91,30 @@ const projects: Project[] = [
   },
 ]
 
-/* ─── Browser mockup preview ─────────────────────────────── */
+/* ─── Browser mockup ─────────────────────────────── */
 function MockBrowser({ project }: { project: Project }) {
   const cls = palette[project.highlight]
   const { media } = project
 
   return (
-    <div className="rounded-xl overflow-hidden border border-slate-800 shadow-2xl group/browser">
+    <div className="rounded-xl overflow-hidden shadow-md shadow-slate-200/80 dark:shadow-slate-900/60 group/browser">
       {/* Chrome bar */}
-      <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-950 border-b border-slate-800">
-        <span className="w-2.5 h-2.5 rounded-full bg-red-500/80 shrink-0" />
-        <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/80 shrink-0" />
-        <span className="w-2.5 h-2.5 rounded-full bg-green-500/80 shrink-0" />
+      <div className="flex items-center gap-2 px-4 py-2.5 bg-white/90 dark:bg-slate-900/90 border-b border-slate-100 dark:border-slate-800">
+        <span className="w-2.5 h-2.5 rounded-full bg-red-400/80 shrink-0" />
+        <span className="w-2.5 h-2.5 rounded-full bg-amber-400/80 shrink-0" />
+        <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/80 shrink-0" />
         <div className="flex-1 mx-3">
-          <div className="bg-slate-800/80 rounded px-3 py-0.5 text-[11px] text-slate-500 font-mono truncate">
+          <div className="bg-slate-100 dark:bg-slate-800 rounded px-3 py-0.5 text-[11px] text-slate-400 dark:text-slate-500 font-mono truncate">
             {project.liveUrl}
           </div>
         </div>
-        <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border border-current/20 shrink-0 ${cls.text}`}>
+        <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border shrink-0 ${cls.text} ${cls.bg} border-current/20`}>
           {project.badge}
         </span>
       </div>
 
       {/* Preview canvas */}
-      <div className="relative aspect-video overflow-hidden">
-
+      <div className="relative aspect-video overflow-hidden bg-slate-50 dark:bg-slate-900">
         {media?.type === 'image' && (
           <img
             src={media.src}
@@ -125,7 +122,6 @@ function MockBrowser({ project }: { project: Project }) {
             className="w-full h-full object-cover object-top transition-transform duration-700 group-hover/browser:scale-105"
           />
         )}
-
         {media?.type === 'video' && (
           <video
             src={media.src}
@@ -133,7 +129,6 @@ function MockBrowser({ project }: { project: Project }) {
             autoPlay muted loop playsInline preload="metadata"
           />
         )}
-
         {media?.type === 'youtube' && (
           <iframe
             className="absolute inset-0 w-full h-full pointer-events-none"
@@ -143,18 +138,24 @@ function MockBrowser({ project }: { project: Project }) {
             frameBorder="0"
           />
         )}
-
         {!media && (
           <div
             className="absolute inset-0 flex items-center justify-center"
-            style={{ background: `linear-gradient(135deg, rgba(${cls.rgb},0.10) 0%, #020617 55%, rgba(${cls.rgb},0.04) 100%)` }}
+            style={{ background: `linear-gradient(135deg, rgba(${cls.rgb},0.08) 0%, #f8fafc 55%, rgba(${cls.rgb},0.04) 100%)` }}
           >
-            <div className="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
+            {/* Subtle grid pattern */}
             <div
-              className="absolute w-44 h-44 rounded-full blur-3xl pointer-events-none"
+              className="absolute inset-0 pointer-events-none opacity-40"
+              style={{
+                backgroundImage: `linear-gradient(rgba(${cls.rgb},0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(${cls.rgb},0.06) 1px, transparent 1px)`,
+                backgroundSize: '32px 32px',
+              }}
+            />
+            <div
+              className="absolute w-36 h-36 rounded-full blur-3xl pointer-events-none"
               style={{ background: `rgba(${cls.rgb},0.18)` }}
             />
-            <div className={`relative z-10 p-5 rounded-2xl ${cls.bg} ${cls.text}`}>
+            <div className={`relative z-10 p-5 rounded-2xl ${cls.bg} ${cls.text} shadow-sm`}>
               {project.icon}
             </div>
           </div>
@@ -164,10 +165,10 @@ function MockBrowser({ project }: { project: Project }) {
   )
 }
 
-/* ─── Project card  (3-D tilt + glare) ──────────────────── */
+/* ─── Project card (3-D tilt + glass) ───────────── */
 function ProjectCard({ project }: { project: Project }) {
   const cls     = palette[project.highlight]
-  const cardRef = useRef<HTMLDivElement>(null)
+  const cardRef  = useRef<HTMLDivElement>(null)
   const glareRef = useRef<HTMLDivElement>(null)
 
   const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -177,19 +178,20 @@ function ProjectCard({ project }: { project: Project }) {
     const rect  = card.getBoundingClientRect()
     const x     = e.clientX - rect.left
     const y     = e.clientY - rect.top
-    const normX = x / rect.width  - 0.5   // –0.5 … 0.5
+    const normX = x / rect.width  - 0.5
     const normY = y / rect.height - 0.5
-    const rotY  =  normX * 18
-    const rotX  = -normY * 12
-    card.style.transform  = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.03,1.03,1.03)`
-    card.style.boxShadow  = `
-      ${-normX * 28}px ${-normY * 18}px 52px rgba(${cls.rgb},0.24),
-      0 28px 64px rgba(0,0,0,0.50)
+    const rotY  =  normX * 16
+    const rotX  = -normY * 10
+    card.style.transform = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.025,1.025,1.025)`
+    card.style.boxShadow = `
+      ${-normX * 24}px ${-normY * 16}px 48px rgba(${cls.rgb},0.20),
+      0 24px 48px rgba(${cls.rgb},0.10),
+      0 2px 8px rgba(0,0,0,0.04)
     `
     if (glare) {
       const gx = (x / rect.width  * 100).toFixed(1)
       const gy = (y / rect.height * 100).toFixed(1)
-      glare.style.background = `radial-gradient(circle at ${gx}% ${gy}%, rgba(255,255,255,0.14) 0%, transparent 62%)`
+      glare.style.background = `radial-gradient(circle at ${gx}% ${gy}%, rgba(255,255,255,0.50) 0%, transparent 60%)`
     }
   }
 
@@ -207,37 +209,37 @@ function ProjectCard({ project }: { project: Project }) {
       ref={cardRef}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
-      className="group space-y-4 relative"
+      className="group space-y-4 relative glass rounded-2xl p-4 pb-5"
       style={{ transition: 'transform 0.20s ease, box-shadow 0.20s ease' }}
     >
-      {/* Specular glare — covers the full card */}
+      {/* Specular glare */}
       <div
         ref={glareRef}
-        className="absolute inset-0 rounded-xl pointer-events-none z-10"
+        className="absolute inset-0 rounded-2xl pointer-events-none z-10"
         style={{ mixBlendMode: 'overlay', transition: 'background 0.08s ease' }}
       />
 
       <MockBrowser project={project} />
 
       {/* Title */}
-      <h3 className={`text-lg font-bold text-white transition-colors duration-200 group-hover:${cls.text}`}>
+      <h3 className={`text-base font-bold text-slate-900 dark:text-white transition-colors duration-200 group-hover:${cls.text} px-1`}>
         {project.title}
       </h3>
 
       {/* Tech icons */}
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2 px-1">
         {project.tech.map(t => {
           const Icon = techIcons[t]
           return Icon ? (
             <div
               key={t}
               title={t}
-              className="p-1.5 rounded-lg bg-slate-800/80 border border-slate-700/50 hover:border-slate-600 transition-all hover:scale-110"
+              className="p-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 hover:border-slate-300 dark:hover:border-slate-600 transition-all hover:scale-110 shadow-sm"
             >
-              <Icon size={14} color={cls.hex} style={{ opacity: 0.75 }} />
+              <Icon size={14} color={cls.hex} style={{ opacity: 0.85 }} />
             </div>
           ) : (
-            <span key={t} className="text-[10px] font-mono px-2 py-1 rounded-md bg-slate-800/80 border border-slate-700/50 text-slate-400">
+            <span key={t} className="text-[10px] font-mono px-2 py-1 rounded-md bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 text-slate-500 dark:text-slate-400 shadow-sm">
               {t}
             </span>
           )
@@ -245,21 +247,21 @@ function ProjectCard({ project }: { project: Project }) {
       </div>
 
       {/* Description */}
-      <p className="text-slate-400 text-sm leading-relaxed">
+      <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed px-1">
         {project.shortDesc}
       </p>
 
       {/* Links */}
-      <div className="flex items-center gap-5">
+      <div className="flex items-center gap-5 px-1">
         <a
           href={project.githubUrl} target="_blank" rel="noopener noreferrer"
-          className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-white transition-colors"
+          className="flex items-center gap-1.5 text-xs text-slate-400 dark:text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
         >
           <GithubIcon size={14} /> Source
         </a>
         <a
           href={project.liveUrl} target="_blank" rel="noopener noreferrer"
-          className={`flex items-center gap-1.5 text-xs ${cls.text} opacity-80 hover:opacity-100 transition-opacity`}
+          className={`flex items-center gap-1.5 text-xs ${cls.text} opacity-80 hover:opacity-100 transition-opacity font-medium`}
         >
           <ExternalLink size={13} /> Live Demo
         </a>
@@ -268,29 +270,26 @@ function ProjectCard({ project }: { project: Project }) {
   )
 }
 
-/* ─── Main export ────────────────────────────────────────── */
+/* ─── Section ────────────────────────────────────── */
 export default function Projects() {
   return (
     <section id="projects" className="py-28 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-950/5 to-transparent pointer-events-none" />
-
       {/* Header */}
       <div className="mb-16 text-center px-6">
-        <p className="font-mono text-cyan-400 text-xs tracking-[0.3em] uppercase mb-3">02. Projects</p>
-        <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight">Things I've Built</h2>
-        <p className="text-slate-500 mt-2 text-sm">{projects.length} projects · all live and deployed</p>
+        <p className="font-mono text-indigo-500 text-xs tracking-[0.3em] uppercase mb-3">02. Projects</p>
+        <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight">Things I've Built</h2>
+        <p className="text-slate-500 dark:text-slate-400 mt-2 text-sm">{projects.length} projects · all live and deployed</p>
       </div>
 
       {/* Infinite marquee — fade edges */}
       <div
         className="relative overflow-hidden"
         style={{
-          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
-          maskImage:        'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%)',
+          maskImage:        'linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%)',
         }}
       >
-        {/* Doubled array → seamless loop */}
-        <div className="marquee-track flex gap-8 w-max px-8">
+        <div className="marquee-track flex gap-6 w-max px-6">
           {[...projects, ...projects].map((project, i) => (
             <div key={`${project.title}-${i}`} className="w-[420px] shrink-0">
               <ProjectCard project={project} />
@@ -299,7 +298,7 @@ export default function Projects() {
         </div>
       </div>
 
-      <p className="text-center font-mono text-xs text-slate-700 mt-10 tracking-widest uppercase">
+      <p className="text-center font-mono text-xs text-slate-400 mt-10 tracking-widest uppercase">
         hover to pause · click to explore
       </p>
     </section>

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
+import ThemeToggle from './ThemeToggle'
 
 const sectionLinks = ['About', 'Projects', 'Skills', 'Contact']
 
@@ -21,9 +22,7 @@ export default function Navbar() {
 
   const scrollTo = (id: string) => {
     setMobileOpen(false)
-    if (isHome) {
-      document.getElementById(id.toLowerCase())?.scrollIntoView({ behavior: 'smooth' })
-    }
+    if (isHome) document.getElementById(id.toLowerCase())?.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
@@ -33,39 +32,42 @@ export default function Navbar() {
       transition={{ duration: 0.6, ease: 'easeOut' }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-slate-950/90 backdrop-blur-md border-b border-slate-800/60 shadow-sm'
+          ? 'glass shadow-sm shadow-indigo-100/40 dark:shadow-indigo-900/20'
           : 'bg-transparent'
       }`}
     >
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+        {/* Logo */}
         <Link
           href="/"
-          className="font-mono text-cyan-400 text-lg font-bold tracking-wider hover:text-cyan-300 transition-colors"
+          className="font-mono text-indigo-600 dark:text-indigo-400 text-lg font-bold tracking-wider hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors"
         >
           &lt;AKS /&gt;
         </Link>
 
-        {/* Desktop */}
+        {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-8">
           {isHome && sectionLinks.map(link => (
             <button
               key={link}
               onClick={() => scrollTo(link)}
-              className="text-slate-400 hover:text-white text-sm font-medium tracking-wide transition-colors duration-200 relative group"
+              className="text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 text-sm font-medium tracking-wide transition-colors duration-200 relative group"
             >
               {link}
-              <span className="absolute -bottom-1 left-0 w-0 h-px bg-cyan-400 group-hover:w-full transition-all duration-300" />
+              <span className="absolute -bottom-1 left-0 w-0 h-px bg-indigo-500 group-hover:w-full transition-all duration-300" />
             </button>
           ))}
 
           <Link
             href="/journey"
             className={`text-sm font-medium tracking-wide transition-colors duration-200 relative group ${
-              pathname === '/journey' ? 'text-cyan-400' : 'text-slate-400 hover:text-white'
+              pathname === '/journey'
+                ? 'text-indigo-600 dark:text-indigo-400'
+                : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400'
             }`}
           >
             My Journey
-            <span className={`absolute -bottom-1 left-0 h-px bg-cyan-400 transition-all duration-300 ${
+            <span className={`absolute -bottom-1 left-0 h-px bg-indigo-500 transition-all duration-300 ${
               pathname === '/journey' ? 'w-full' : 'w-0 group-hover:w-full'
             }`} />
           </Link>
@@ -74,20 +76,25 @@ export default function Navbar() {
             href="/resume.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-4 py-2 border border-cyan-400/50 text-cyan-400 text-sm font-mono rounded hover:bg-cyan-400/10 hover:border-cyan-400 transition-all duration-200"
+            className="px-4 py-2 border border-indigo-400/50 text-indigo-600 dark:text-indigo-400 dark:border-indigo-500/50 text-sm font-mono rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/20 hover:border-indigo-500 transition-all duration-200"
           >
             Resume
           </a>
+
+          <ThemeToggle />
         </div>
 
-        {/* Mobile toggle */}
-        <button
-          className="md:hidden text-slate-400 hover:text-cyan-400 transition-colors"
-          onClick={() => setMobileOpen(p => !p)}
-          aria-label="Toggle menu"
-        >
-          {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-        </button>
+        {/* Mobile controls */}
+        <div className="md:hidden flex items-center gap-3">
+          <ThemeToggle />
+          <button
+            className="text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+            onClick={() => setMobileOpen(p => !p)}
+            aria-label="Toggle menu"
+          >
+            {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile menu */}
@@ -97,14 +104,14 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-slate-950/97 backdrop-blur-md border-b border-slate-800/60 overflow-hidden"
+            className="md:hidden glass border-b border-white/60 dark:border-white/10 overflow-hidden"
           >
             <div className="px-6 py-4 flex flex-col gap-4">
               {isHome && sectionLinks.map(link => (
                 <button
                   key={link}
                   onClick={() => scrollTo(link)}
-                  className="text-slate-400 hover:text-cyan-400 text-sm text-left transition-colors"
+                  className="text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 text-sm text-left transition-colors"
                 >
                   {link}
                 </button>
@@ -112,7 +119,7 @@ export default function Navbar() {
               <Link
                 href="/journey"
                 onClick={() => setMobileOpen(false)}
-                className="text-slate-400 hover:text-cyan-400 text-sm text-left transition-colors"
+                className="text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 text-sm text-left transition-colors"
               >
                 My Journey
               </Link>
@@ -120,7 +127,7 @@ export default function Navbar() {
                 href="/resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-cyan-400 text-sm font-mono"
+                className="text-indigo-600 dark:text-indigo-400 text-sm font-mono"
               >
                 Resume
               </a>

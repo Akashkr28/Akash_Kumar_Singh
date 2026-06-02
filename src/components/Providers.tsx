@@ -1,6 +1,7 @@
 'use client'
 import { useEffect } from 'react'
 import Lenis from 'lenis'
+import { ThemeProvider } from 'next-themes'
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -11,19 +12,15 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       wheelMultiplier: 0.9,
       touchMultiplier: 1.5,
     })
-
     let rafId: number
-    function raf(time: number) {
-      lenis.raf(time)
-      rafId = requestAnimationFrame(raf)
-    }
+    function raf(time: number) { lenis.raf(time); rafId = requestAnimationFrame(raf) }
     rafId = requestAnimationFrame(raf)
-
-    return () => {
-      cancelAnimationFrame(rafId)
-      lenis.destroy()
-    }
+    return () => { cancelAnimationFrame(rafId); lenis.destroy() }
   }, [])
 
-  return <>{children}</>
+  return (
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+      {children}
+    </ThemeProvider>
+  )
 }

@@ -1,14 +1,14 @@
 'use client'
 export default function Footer() {
   return (
-    <footer className="border-t border-slate-800 py-8 px-6 text-center">
-      <p className="font-mono text-slate-600 text-xs">
-        <span className="text-cyan-400">{'<'}</span>
+    <footer className="border-t border-slate-200/60 dark:border-slate-800/60 py-8 px-6 text-center glass">
+      <p className="font-mono text-slate-500 text-xs">
+        <span className="text-indigo-500">{'<'}</span>
         {'  '}Built by{' '}
-        <span className="text-slate-400">Akash Kumar Singh</span>
+        <span className="text-slate-700 dark:text-slate-300 font-medium">Akash Kumar Singh</span>
         {'  '}
-        <span className="text-cyan-400">{'/>'}</span>
-        {'  '}·{'  '}React + TypeScript + Tailwind
+        <span className="text-indigo-500">{'/>'}</span>
+        {'  '}·{'  '}Next.js + TypeScript + Tailwind
       </p>
     </footer>
   )
