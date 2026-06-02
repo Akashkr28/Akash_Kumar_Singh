@@ -1,3 +1,4 @@
+'use client'
 import { useRef } from 'react'
 import {
   ExternalLink, Radio, BarChart2, CheckSquare, Layers,

@@ -1,8 +1,10 @@
+'use client'
 import { useEffect, useState, useRef, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { Mail, ArrowDown } from 'lucide-react'
 import { GithubIcon, LinkedinIcon } from './BrandIcons'
-import ParticleField from './ParticleField'
+import dynamic from 'next/dynamic'
+const ParticleField = dynamic(() => import('./ParticleField'), { ssr: false })
 
 const roles = [
   'Full Stack Developer',

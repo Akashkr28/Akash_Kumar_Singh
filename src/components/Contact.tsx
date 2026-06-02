@@ -1,3 +1,4 @@
+'use client'
 import { useRef, useState, type FormEvent } from 'react'
 import { motion, useInView } from 'framer-motion'
 import emailjs from '@emailjs/browser'

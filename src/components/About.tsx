@@ -1,3 +1,4 @@
+'use client'
 import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -94,7 +95,7 @@ function VideoResumeCard() {
                 />
                 <div className="absolute inset-0 bg-slate-950/30 group-hover:bg-slate-950/20 transition-colors duration-200" />
                 {/* Play button */}
-                <div className="relative w-18 h-18 w-16 h-16 rounded-full bg-cyan-400/90 flex items-center justify-center shadow-lg shadow-cyan-400/30 group-hover:bg-cyan-300 group-hover:scale-110 transition-all duration-200 z-10">
+                <div className="relative w-16 h-16 rounded-full bg-cyan-400/90 flex items-center justify-center shadow-lg shadow-cyan-400/30 group-hover:bg-cyan-300 group-hover:scale-110 transition-all duration-200 z-10">
                   <Play size={24} className="text-slate-950 ml-1" fill="currentColor" />
                 </div>
               </button>

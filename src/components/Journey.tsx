@@ -1,5 +1,6 @@
+'use client'
 import { useRef, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import Link from 'next/link'
 import { motion, useInView } from 'framer-motion'
 import { ArrowLeft, GraduationCap, Briefcase, Cpu, Lightbulb, TrendingUp } from 'lucide-react'
 import { gsap } from 'gsap'
@@ -368,7 +369,7 @@ export default function Journey() {
       >
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link
-            to="/"
+            href="/"
             className="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors text-sm font-mono group"
           >
             <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
@@ -528,7 +529,7 @@ export default function Journey() {
             The journey continues — one commit at a time.
           </p>
           <Link
-            to="/"
+            href="/"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-mono font-semibold text-slate-950 bg-cyan-400 hover:bg-cyan-300 transition-colors"
           >
             <ArrowLeft size={15} />

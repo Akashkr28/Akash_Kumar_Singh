@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Lenis handles smooth scroll — disable native smooth so they don't conflict */
+/* Lenis smooth scroll — disable native smooth so they don't conflict */
 html {
   scroll-behavior: auto;
 }
@@ -12,6 +12,12 @@ body {
   font-family: 'Inter', system-ui, sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  cursor: none; /* hide default cursor — custom cursor takes over */
+}
+
+/* Show default cursor on touch devices */
+@media (pointer: coarse) {
+  body { cursor: auto; }
 }
 
 #root {
@@ -77,4 +83,3 @@ body {
 .marquee-track:hover {
   animation-play-state: paused;
 }
-

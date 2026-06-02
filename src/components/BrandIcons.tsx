@@ -1,3 +1,4 @@
+'use client'
 interface IconProps {
   size?: number
   className?: string
