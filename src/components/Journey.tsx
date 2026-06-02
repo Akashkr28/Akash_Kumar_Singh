@@ -130,13 +130,11 @@ const typeConfig: Record<MilestoneType, {
 
 /* ─── Single milestone card ─────────────────────────────── */
 function MilestoneCard({ milestone, index }: { milestone: Milestone; index: number }) {
-  const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-60px' })
   const cfg = typeConfig[milestone.type]
   const isLeft = index % 2 === 0
 
   return (
-    <div ref={ref} className="relative flex items-start gap-0 md:gap-0">
+    <div className="relative flex items-start gap-0 md:gap-0">
 
       {/* ── Desktop alternating layout ── */}
       <div className="hidden md:grid w-full" style={{ gridTemplateColumns: '1fr 64px 1fr' }}>
@@ -146,8 +144,9 @@ function MilestoneCard({ milestone, index }: { milestone: Milestone; index: numb
           {isLeft && (
             <motion.div
               initial={{ opacity: 0, x: -60 }}
-              animate={inView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.7, ease: 'power3.out' as never }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.1 }}
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
               className="w-full max-w-md"
             >
               <Card milestone={milestone} cfg={cfg} />
@@ -159,7 +158,8 @@ function MilestoneCard({ milestone, index }: { milestone: Milestone; index: numb
         <div className="flex justify-center items-start pt-6">
           <motion.div
             initial={{ scale: 0, opacity: 0 }}
-            animate={inView ? { scale: 1, opacity: 1 } : {}}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true, amount: 0.5 }}
             transition={{ duration: 0.4, delay: 0.15, type: 'spring', stiffness: 260 }}
             className="w-5 h-5 rounded-full border-2 flex items-center justify-center z-10 relative"
             style={{
@@ -177,8 +177,9 @@ function MilestoneCard({ milestone, index }: { milestone: Milestone; index: numb
           {!isLeft && (
             <motion.div
               initial={{ opacity: 0, x: 60 }}
-              animate={inView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.7, ease: 'power3.out' as never }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.1 }}
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
               className="w-full max-w-md"
             >
               <Card milestone={milestone} cfg={cfg} />
@@ -192,7 +193,8 @@ function MilestoneCard({ milestone, index }: { milestone: Milestone; index: numb
         <div className="flex flex-col items-center gap-0 shrink-0 pt-1">
           <motion.div
             initial={{ scale: 0, opacity: 0 }}
-            animate={inView ? { scale: 1, opacity: 1 } : {}}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true, amount: 0.5 }}
             transition={{ duration: 0.4, type: 'spring', stiffness: 260 }}
             className="w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0"
             style={{ borderColor: cfg.hex, backgroundColor: '#020617' }}
@@ -203,7 +205,8 @@ function MilestoneCard({ milestone, index }: { milestone: Milestone; index: numb
         </div>
         <motion.div
           initial={{ opacity: 0, x: 30 }}
-          animate={inView ? { opacity: 1, x: 0 } : {}}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.1 }}
           transition={{ duration: 0.6 }}
           className="flex-1 pb-4"
         >
