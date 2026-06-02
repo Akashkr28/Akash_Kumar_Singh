@@ -3,6 +3,7 @@ import { useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { motion, useInView } from 'framer-motion'
 import { ArrowLeft, GraduationCap, Briefcase, Cpu, Lightbulb, TrendingUp, ArrowRight } from 'lucide-react'
+import ThemeToggle from './ThemeToggle'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -377,7 +378,10 @@ export default function Journey() {
             <ArrowLeft size={15} className="group-hover:-translate-x-1 transition-transform" />
             Back to Portfolio
           </Link>
-          <span className="font-mono text-indigo-600 dark:text-indigo-400 text-sm font-bold tracking-wider">&lt;AKS /&gt;</span>
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-indigo-600 dark:text-indigo-400 text-sm font-bold tracking-wider">&lt;AKS /&gt;</span>
+            <ThemeToggle />
+          </div>
         </div>
       </motion.header>
 

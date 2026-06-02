@@ -14,6 +14,9 @@ export default function Navbar() {
   const pathname = usePathname()
   const isHome   = pathname === '/'
 
+  // Journey has its own dedicated header — don't double-render
+  if (pathname === '/journey') return null
+
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20)
     window.addEventListener('scroll', handler)
