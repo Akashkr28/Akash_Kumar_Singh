@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* ── Enable class-based dark mode (.dark on <html>) ── */
-@variant dark (&:is(.dark *));
+@variant dark (&:where(.dark, .dark *));
 
 /* ── CSS variables (auto-switch light ↔ dark) ── */
 :root {
