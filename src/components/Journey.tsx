@@ -7,8 +7,6 @@ import ThemeToggle from './ThemeToggle'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-gsap.registerPlugin(ScrollTrigger)
-
 /* ─── Types ──────────────────────────────────────────────── */
 type MilestoneType = 'education' | 'work' | 'pivot' | 'tech' | 'current'
 
@@ -344,6 +342,7 @@ export default function Journey() {
 
   /* Animate the vertical spine line as you scroll */
   useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger)
     const el   = timelineRef.current
     const line = lineRef.current
     if (!el || !line) return
