@@ -11,17 +11,19 @@ const sectionLinks = ['About', 'Projects', 'Skills', 'Contact']
 export default function Navbar() {
   const [scrolled, setScrolled]     = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
-  const pathname = usePathname()
-  const isHome   = pathname === '/'
+  const pathname  = usePathname()
+  const isHome    = pathname === '/'
+  const isJourney = pathname === '/journey'
 
-  // Journey has its own dedicated header — don't double-render
-  if (pathname === '/journey') return null
-
+  // All hooks must be called before any conditional return (Rules of Hooks)
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20)
     window.addEventListener('scroll', handler)
     return () => window.removeEventListener('scroll', handler)
   }, [])
+
+  // Journey has its own dedicated header — hide Navbar there
+  if (isJourney) return null
 
   const scrollTo = (id: string) => {
     setMobileOpen(false)
