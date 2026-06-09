@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState, useRef, useCallback } from 'react'
 import { motion } from 'framer-motion'
-import { Mail, ArrowDown } from 'lucide-react'
+import { Mail, ArrowDown, Eye, Download } from 'lucide-react'
 import { GithubIcon, LinkedinIcon } from './BrandIcons'
 
 const roles = [
@@ -164,6 +164,28 @@ export default function Hero() {
             >
               Get In Touch
             </button>
+
+            {/* Resume — split pill: View | Download */}
+            <div className="flex items-center glass rounded-xl overflow-hidden shadow-sm border border-slate-200/70 dark:border-slate-700/60">
+              <a
+                href="/resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50/70 dark:hover:bg-indigo-900/20 transition-colors duration-200"
+              >
+                <Eye size={14} />
+                Resume
+              </a>
+              <div className="w-px self-stretch bg-slate-200/80 dark:bg-slate-700/60" />
+              <a
+                href="/resume.pdf"
+                download="Akash_Kumar_Singh_Resume.pdf"
+                className="flex items-center gap-1.5 px-3.5 py-3 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50/70 dark:hover:bg-indigo-900/20 transition-colors duration-200"
+                title="Download PDF"
+              >
+                <Download size={14} />
+              </a>
+            </div>
           </motion.div>
 
           {/* Social links */}
