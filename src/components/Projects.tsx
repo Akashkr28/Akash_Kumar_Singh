@@ -1,11 +1,13 @@
 'use client'
 import { useRef } from 'react'
-import { ExternalLink, Radio, BarChart2, CheckSquare, Layers } from 'lucide-react'
+import { ExternalLink, Radio, BarChart2, CheckSquare, Layers, Shield, Wand2 } from 'lucide-react'
 import { GithubIcon } from './BrandIcons'
+import { motion } from 'framer-motion'
 import {
   SiReact, SiTypescript, SiNodedotjs, SiRedis,
   SiApachekafka, SiLeaflet, SiJavascript,
   SiNextdotjs, SiPostgresql, SiExpress,
+  SiPython, SiFastapi, SiSqlite,
 } from 'react-icons/si'
 import type { IconType } from 'react-icons'
 
@@ -40,6 +42,9 @@ const techIcons: Record<string, IconType> = {
   'Next.js':    SiNextdotjs,
   'PostgreSQL': SiPostgresql,
   'Express':    SiExpress,
+  'Python':     SiPython,
+  'FastAPI':    SiFastapi,
+  'SQLite':     SiSqlite,
 }
 
 /* ─── Palette ────────────────────────────────────── */
@@ -88,6 +93,26 @@ const projects: Project[] = [
     githubUrl: 'https://github.com/Akashkr28/ChaiForm_Form_Builder_SaaS',
     icon: <Layers size={28} />, highlight: 'amber', badge: 'SaaS',
     media: { type: 'youtube', videoId: 'vEyni4YnQAw' },
+  },
+]
+
+/* ─── Prompt Engineering projects ───────────────── */
+const promptProjects: Project[] = [
+  {
+    title: 'Sentinel — Prompt Injection & Attack Defense',
+    shortDesc: 'Full-stack red-teaming platform exposing OWASP LLM01 attack patterns. Dual-layer detection — heuristic regex (<1 ms) plus LLM-as-judge semantic grading — blocks 21 hand-crafted payloads across 5 injection categories with honest benchmarking.',
+    tech: ['Next.js', 'TypeScript', 'Python', 'SQLite', 'Claude API'],
+    liveUrl: 'https://sentinel-prompt-injection.vercel.app',
+    githubUrl: 'https://github.com/Akashkr28/Sentinel_Prompt_Injection_Attack_and_Defense',
+    icon: <Shield size={28} />, highlight: 'rose', badge: 'AI Security',
+  },
+  {
+    title: 'PromptForge — Prompt Optimizer',
+    shortDesc: 'Self-improving prompt engine powered by meta-prompting and LLM evaluation. Runs an iterative execute → evaluate → optimize loop, tracking quality gains via live score curves and word-level diffs across full session history.',
+    tech: ['Next.js', 'TypeScript', 'Python', 'FastAPI', 'SQLite', 'Claude API'],
+    liveUrl: 'https://prompt-forge-a-prompt-optimizer-too.vercel.app',
+    githubUrl: 'https://github.com/Akashkr28/Prompt_Forge_A_Prompt_Optimizer_Tool',
+    icon: <Wand2 size={28} />, highlight: 'violet', badge: 'AI Tool',
   },
 ]
 
@@ -162,6 +187,84 @@ function MockBrowser({ project }: { project: Project }) {
         )}
       </div>
     </div>
+  )
+}
+
+/* ─── Prompt Engineering horizontal card ────────── */
+function PromptProjectCard({ project }: { project: Project }) {
+  const cls = palette[project.highlight]
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, filter: 'blur(14px)', y: 18 }}
+      whileInView={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
+      transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+      viewport={{ once: true, amount: 0.15 }}
+      className="glass rounded-2xl p-6 flex flex-col sm:flex-row gap-6 group"
+    >
+      {/* Left — icon + title + badge */}
+      <div className="flex flex-row sm:flex-col items-center sm:items-start gap-4 sm:gap-3 sm:w-44 shrink-0">
+        <div className={`p-4 rounded-2xl ${cls.bg} ${cls.text} shadow-sm shrink-0`}>
+          {project.icon}
+        </div>
+        <div>
+          <h3 className={`font-bold text-slate-900 dark:text-white text-sm leading-snug group-hover:${cls.text} transition-colors duration-200`}>
+            {project.title}
+          </h3>
+          <span className={`mt-1.5 inline-block text-[10px] font-mono px-2 py-0.5 rounded-full border ${cls.text} ${cls.bg} border-current/20`}>
+            {project.badge}
+          </span>
+        </div>
+      </div>
+
+      {/* Vertical divider (desktop only) */}
+      <div className="hidden sm:block w-px self-stretch bg-slate-200/60 dark:bg-slate-700/40 shrink-0" />
+
+      {/* Right — desc + tech + links */}
+      <div className="flex-1 flex flex-col gap-3 justify-center">
+        <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
+          {project.shortDesc}
+        </p>
+
+        {/* Tech tags */}
+        <div className="flex flex-wrap items-center gap-2">
+          {project.tech.map(t => {
+            const Icon = techIcons[t]
+            return Icon ? (
+              <div
+                key={t} title={t}
+                className="p-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 hover:border-slate-300 dark:hover:border-slate-600 transition-all hover:scale-110 shadow-sm"
+              >
+                <Icon size={14} color={cls.hex} style={{ opacity: 0.85 }} />
+              </div>
+            ) : (
+              <span
+                key={t}
+                className="text-[10px] font-mono px-2 py-1 rounded-md bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 text-slate-500 dark:text-slate-400 shadow-sm"
+              >
+                {t}
+              </span>
+            )
+          })}
+        </div>
+
+        {/* Links */}
+        <div className="flex items-center gap-5">
+          <a
+            href={project.githubUrl} target="_blank" rel="noopener noreferrer"
+            className="flex items-center gap-1.5 text-xs text-slate-400 dark:text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
+          >
+            <GithubIcon size={14} /> Source
+          </a>
+          <a
+            href={project.liveUrl} target="_blank" rel="noopener noreferrer"
+            className={`flex items-center gap-1.5 text-xs ${cls.text} opacity-80 hover:opacity-100 transition-opacity font-medium`}
+          >
+            <ExternalLink size={13} /> Live Demo
+          </a>
+        </div>
+      </div>
+    </motion.div>
   )
 }
 
@@ -301,6 +404,21 @@ export default function Projects() {
       <p className="text-center font-mono text-xs text-slate-400 mt-10 tracking-widest uppercase">
         hover to pause · click to explore
       </p>
+
+      {/* ── Prompt Engineering subsection ───────────── */}
+      <div className="max-w-3xl mx-auto px-6 mt-20 space-y-4">
+        {/* Divider label */}
+        <div className="flex items-center gap-4 mb-6">
+          <span className="font-mono text-rose-500 dark:text-rose-400 text-xs tracking-[0.28em] uppercase whitespace-nowrap">
+            Prompt Engineering
+          </span>
+          <div className="flex-1 h-px bg-gradient-to-r from-rose-300/70 via-violet-300/40 to-transparent dark:from-rose-800/60 dark:via-violet-800/30" />
+        </div>
+
+        {promptProjects.map(project => (
+          <PromptProjectCard key={project.title} project={project} />
+        ))}
+      </div>
     </section>
   )
 }
