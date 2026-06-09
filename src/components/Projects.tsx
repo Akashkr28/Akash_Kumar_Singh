@@ -105,6 +105,7 @@ const promptProjects: Project[] = [
     liveUrl: 'https://sentinel-prompt-injection.vercel.app',
     githubUrl: 'https://github.com/Akashkr28/Sentinel_Prompt_Injection_Attack_and_Defense',
     icon: <Shield size={28} />, highlight: 'rose', badge: 'AI Security',
+    media: { type: 'video', src: '/previews/sentinel.mp4' },
   },
   {
     title: 'PromptForge — Prompt Optimizer',
@@ -113,6 +114,7 @@ const promptProjects: Project[] = [
     liveUrl: 'https://prompt-forge-a-prompt-optimizer-too.vercel.app',
     githubUrl: 'https://github.com/Akashkr28/Prompt_Forge_A_Prompt_Optimizer_Tool',
     icon: <Wand2 size={28} />, highlight: 'violet', badge: 'AI Tool',
+    media: { type: 'video', src: '/previews/prompt-forge.mp4' },
   },
 ]
 
@@ -192,36 +194,85 @@ function MockBrowser({ project }: { project: Project }) {
 
 /* ─── Prompt Engineering horizontal card ────────── */
 function PromptProjectCard({ project }: { project: Project }) {
-  const cls = palette[project.highlight]
+  const cls   = palette[project.highlight]
+  const { media } = project
 
   return (
     <motion.div
       initial={{ opacity: 0, filter: 'blur(14px)', y: 18 }}
       whileInView={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
       transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-      viewport={{ once: true, amount: 0.15 }}
-      className="glass rounded-2xl p-6 flex flex-col sm:flex-row gap-6 group"
+      viewport={{ once: true, amount: 0.12 }}
+      className="glass rounded-2xl overflow-hidden flex flex-col md:flex-row group"
     >
-      {/* Left — icon + title + badge */}
-      <div className="flex flex-row sm:flex-col items-center sm:items-start gap-4 sm:gap-3 sm:w-44 shrink-0">
-        <div className={`p-4 rounded-2xl ${cls.bg} ${cls.text} shadow-sm shrink-0`}>
-          {project.icon}
-        </div>
-        <div>
-          <h3 className={`font-bold text-slate-900 dark:text-white text-sm leading-snug group-hover:${cls.text} transition-colors duration-200`}>
-            {project.title}
-          </h3>
-          <span className={`mt-1.5 inline-block text-[10px] font-mono px-2 py-0.5 rounded-full border ${cls.text} ${cls.bg} border-current/20`}>
-            {project.badge}
-          </span>
+      {/* Left — browser mockup with video */}
+      <div className="md:w-[46%] shrink-0 rounded-b-none md:rounded-r-none md:rounded-l-2xl overflow-hidden">
+        <div className="rounded-xl md:rounded-none overflow-hidden shadow-md shadow-slate-200/60 dark:shadow-slate-900/50 h-full flex flex-col">
+          {/* Chrome bar */}
+          <div className="flex items-center gap-2 px-4 py-2.5 bg-white/90 dark:bg-slate-900/90 border-b border-slate-100 dark:border-slate-800 shrink-0">
+            <span className="w-2.5 h-2.5 rounded-full bg-red-400/80" />
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-400/80" />
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/80" />
+            <div className="flex-1 mx-3">
+              <div className="bg-slate-100 dark:bg-slate-800 rounded px-3 py-0.5 text-[11px] text-slate-400 dark:text-slate-500 font-mono truncate">
+                {project.liveUrl}
+              </div>
+            </div>
+            <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border shrink-0 ${cls.text} ${cls.bg} border-current/20`}>
+              {project.badge}
+            </span>
+          </div>
+
+          {/* Video / fallback */}
+          <div className="relative aspect-video overflow-hidden bg-slate-50 dark:bg-slate-900 flex-1">
+            {media?.type === 'video' && (
+              <video
+                src={media.src}
+                className="w-full h-full object-cover"
+                autoPlay muted loop playsInline preload="metadata"
+              />
+            )}
+            {!media && (
+              <div
+                className="absolute inset-0 flex items-center justify-center"
+                style={{ background: `linear-gradient(135deg, rgba(${cls.rgb},0.08) 0%, #f8fafc 55%, rgba(${cls.rgb},0.04) 100%)` }}
+              >
+                <div
+                  className="absolute inset-0 pointer-events-none opacity-40"
+                  style={{
+                    backgroundImage: `linear-gradient(rgba(${cls.rgb},0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(${cls.rgb},0.06) 1px, transparent 1px)`,
+                    backgroundSize: '32px 32px',
+                  }}
+                />
+                <div className="absolute w-28 h-28 rounded-full blur-3xl pointer-events-none" style={{ background: `rgba(${cls.rgb},0.18)` }} />
+                <div className={`relative z-10 p-5 rounded-2xl ${cls.bg} ${cls.text} shadow-sm`}>{project.icon}</div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Vertical divider (desktop only) */}
-      <div className="hidden sm:block w-px self-stretch bg-slate-200/60 dark:bg-slate-700/40 shrink-0" />
+      {/* Vertical divider (desktop) */}
+      <div className="hidden md:block w-px self-stretch bg-slate-200/50 dark:bg-slate-700/30 shrink-0" />
 
-      {/* Right — desc + tech + links */}
-      <div className="flex-1 flex flex-col gap-3 justify-center">
+      {/* Right — meta + desc + tech + links */}
+      <div className="flex-1 flex flex-col gap-3 p-6 justify-center">
+        {/* Icon + title + badge */}
+        <div className="flex items-start gap-3">
+          <div className={`p-3 rounded-xl ${cls.bg} ${cls.text} shadow-sm shrink-0`}>
+            {project.icon}
+          </div>
+          <div>
+            <h3 className={`font-bold text-slate-900 dark:text-white text-base leading-snug group-hover:${cls.text} transition-colors duration-200`}>
+              {project.title}
+            </h3>
+            <span className={`mt-1 inline-block text-[10px] font-mono px-2 py-0.5 rounded-full border ${cls.text} ${cls.bg} border-current/20`}>
+              {project.badge}
+            </span>
+          </div>
+        </div>
+
+        {/* Description */}
         <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
           {project.shortDesc}
         </p>
@@ -238,10 +289,7 @@ function PromptProjectCard({ project }: { project: Project }) {
                 <Icon size={14} color={cls.hex} style={{ opacity: 0.85 }} />
               </div>
             ) : (
-              <span
-                key={t}
-                className="text-[10px] font-mono px-2 py-1 rounded-md bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 text-slate-500 dark:text-slate-400 shadow-sm"
-              >
+              <span key={t} className="text-[10px] font-mono px-2 py-1 rounded-md bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 text-slate-500 dark:text-slate-400 shadow-sm">
                 {t}
               </span>
             )
@@ -249,7 +297,7 @@ function PromptProjectCard({ project }: { project: Project }) {
         </div>
 
         {/* Links */}
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-5 pt-1">
           <a
             href={project.githubUrl} target="_blank" rel="noopener noreferrer"
             className="flex items-center gap-1.5 text-xs text-slate-400 dark:text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
